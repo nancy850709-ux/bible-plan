@@ -7,15 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #fdfbf7; /* 米白色背景 */
+            --bg-color: #fdfbf7;
             --primary: #4a4a4a;
             
-            /* === 🎨 在這裡調整你的顏色 === */
+            /* === 🎨 顏色設定 === */
             --color-ot: #795548;    /* 舊約：咖啡色 */
             --color-psalm: #ffeaa7; /* 詩篇：柔和黃 */
             --color-nt: #ffc3d0;    /* 新約：淡粉色 */
             --color-note: #fff3cd;  /* 筆記：淡黃便利貼 */
-            --color-month: #795548; /* 月份標題：跟舊約一樣用咖啡色，比較統一 */
+            
+            --color-month: #ff9f43; /* 🆕 月份：橘黃色 */
+            --card-border: #e0e0e0; /* 🆕 卡片框線顏色 */
         }
 
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
@@ -41,47 +43,49 @@
         .progress-title { font-size: 0.9em; color: #a1887f; margin-bottom: 2px; }
         .progress-percent { font-size: 1.8em; font-weight: 800; color: var(--color-ot); }
         
-        /* 條狀進度條 */
         .bar-bg { width: 100px; height: 8px; background: #efebe9; border-radius: 4px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.8s ease; }
 
         .container { max-width: 600px; margin: 0 auto; padding: 10px 20px; }
 
-        /* === 月份分隔線 === */
+        /* === 月份分隔線 (橘黃色) === */
         .month-header {
             margin: 25px 0 15px 0;
             padding: 8px 18px;
-            background: var(--color-month);
+            background: var(--color-month); /* 使用橘黃色 */
             color: white;
             font-weight: bold;
             font-size: 1.1em;
             border-radius: 20px;
             display: inline-block;
-            box-shadow: 0 3px 8px rgba(121, 85, 72, 0.2);
+            box-shadow: 0 3px 8px rgba(255, 159, 67, 0.3);
         }
 
-        /* === 卡片設計 === */
+        /* === 卡片設計 (加強框線) === */
         .card { 
             background: white;
             border-radius: 18px;
             padding: 18px;
             margin-bottom: 18px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
-            border: 2px solid transparent; /* 預留邊框位置 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            
+            /* 🆕 這裡設定了明顯的框線 */
+            border: 2px solid var(--card-border); 
+            
             position: relative;
             transition: transform 0.2s;
             cursor: pointer;
         }
         .card:active { transform: scale(0.98); }
 
-        /* 完成狀態 - 變成淡灰色 */
-        .card.completed { opacity: 0.6; background: #fcfcfc; border-color: #f1f1f1; }
-        .card.completed .date-badge { background: #d7ccc8; } /* 淺咖啡色 */
+        /* 完成狀態 */
+        .card.completed { opacity: 0.6; background: #fcfcfc; border-color: #eee; }
+        .card.completed .date-badge { background: #d7ccc8; }
         .card.completed .check-icon { background: var(--color-ot); border-color: var(--color-ot); color: white; }
 
-        /* 今日特別樣式 - 改用咖啡色系強調 */
+        /* 今日特別樣式 (加粗邊框強調) */
         .card.today-highlight { 
-            border: 3px solid #d7ccc8; 
+            border: 3px solid #8d6e63; /* 今天用深咖啡色框起來 */
             background: #fffdfc;
             box-shadow: 0 0 20px rgba(121, 85, 72, 0.15);
         }
@@ -98,7 +102,7 @@
             font-size: 14px; color: transparent; transition: all 0.2s;
         }
 
-        /* 經文區塊 (繽紛標籤) */
+        /* 經文區塊 */
         .scripture-row { display: flex; align-items: baseline; margin-bottom: 8px; }
         .tag { 
             font-size: 0.75em; padding: 3px 8px; border-radius: 8px; 
@@ -107,18 +111,9 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
-        /* === 🎨 標籤顏色設定 === */
-        .tag.ot { background-color: var(--color-ot); color: white; } /* 咖啡色底+白字 */
-        
-        .tag.psalm { 
-            background-color: var(--color-psalm); 
-            color: #7f6000; /* 因為黃色太亮，字改用深金色才看得到 */
-        }
-        
-        .tag.nt { 
-            background-color: var(--color-nt); 
-            color: #c2185b; /* 因為粉色太淡，字改用深粉紅才看得到 */
-        }
+        .tag.ot { background-color: var(--color-ot); color: white; }
+        .tag.psalm { background-color: var(--color-psalm); color: #7f6000; }
+        .tag.nt { background-color: var(--color-nt); color: #c2185b; }
         
         .scripture-text { font-size: 1.05em; font-weight: 500; color: #4e342e; }
 
@@ -161,17 +156,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
 <script>
-    // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-    // 請確認這裡是你正確的 CSV 連結
+    // 你的 Google Sheet 連結
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv';
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
     // 讀取本地紀錄
     let savedChecks = JSON.parse(localStorage.getItem('bible_checks_v2')) || [];
 
-    // 設定今天日期 (支援格式: 2026/1/29 或 1/29)
     const now = new Date();
-    // 抓取簡短格式做比對，例如 "1/29"
     const todayShort = `${now.getMonth() + 1}/${now.getDate()}`; 
     const todayFull = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
 
@@ -192,18 +183,18 @@
 
     function renderList(data) {
         let lastMonth = '';
-        let todayAnchorId = ''; // 用來記錄今天要捲動到的位置
+        let todayAnchorId = ''; 
 
         data.forEach((row, index) => {
             const dateStr = row['Date'] ? row['Date'].trim() : '';
             if (!dateStr) return;
 
-            // 1. 處理月份分隔線
+            // 處理月份分隔線
             let currentMonth = '';
             if (dateStr.includes('/')) {
                 const parts = dateStr.split('/');
-                if (parts.length === 3) currentMonth = parts[1]; // 2026/1/29
-                else if (parts.length === 2) currentMonth = parts[0]; // 1/29
+                if (parts.length === 3) currentMonth = parts[1];
+                else if (parts.length === 2) currentMonth = parts[0];
             }
 
             if (currentMonth && currentMonth !== lastMonth) {
@@ -214,19 +205,14 @@
                 lastMonth = currentMonth;
             }
 
-            // 2. 判斷是否為今天
             const isToday = dateStr.includes(todayShort) || dateStr === todayFull;
-            
-            // 3. 判斷是否已完成
             const isChecked = savedChecks.includes(dateStr);
 
-            // 4. 準備內容
             const ot = row['OT'] || '';
             const psalm = row['Psalm/Proverbs'] || '';
             const nt = row['NT'] || '';
             const notes = row['Notes'] || '';
 
-            // 建立卡片
             const card = document.createElement('div');
             card.className = `card ${isChecked ? 'completed' : ''}`;
             if (isToday) {
@@ -253,7 +239,7 @@
             contentDiv.appendChild(card);
         });
 
-        // 5. 自動捲動
+        // 自動捲動
         if (todayAnchorId) {
             setTimeout(() => {
                 const element = document.getElementById(todayAnchorId);
