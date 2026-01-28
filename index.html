@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的讀經手帳 V6</title>
+    <title>我的讀經手帳 V7</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #fdfbf7;
             --primary: #4a4a4a;
             
-            /* === 🎨 顏色設定 V6 === */
-            --color-ot: #795548;      /* 舊約：咖啡色 */
+            /* === 🎨 顏色設定 V7 === */
+            --color-ot: #a1887f;      /* 🆕 舊約：淡棕色 */
             
-            --color-psalm-bg: #fff9c4; /* 🆕 詩篇底色：淡黃色 */
-            --color-psalm-text: #5d4037; /* 🆕 詩篇文字：深咖啡色 */
+            --color-psalm-bg: #fff9c4; /* 詩篇底色：淡黃色 */
+            --color-psalm-text: #5d4037; /* 詩篇文字：深咖啡色 */
             
-            --color-nt-bg: #fff5f8;    /* 🆕 新約底色：極淺粉色 */
+            --color-nt-bg: #fff5f8;    /* 新約底色：極淺粉色 */
             --color-nt-text: #c2185b;  /* 新約文字：深粉紅 */
             
             --color-note: #fff3cd;    /* 筆記：淡黃便利貼 */
             
             --color-month: #5d4037;   /* 月份：深咖啡色 */
-            --card-border: #d7ccc8;   /* 卡片邊框：淺咖啡虛線 */
+            --card-border: #5d4037;   /* 🆕 卡片邊框：更深的咖啡色 */
             --date-bg: #eceff1;       /* 日期背景：淡灰 */
+            
+            --highlight-yellow: #fffde7; /* 全完成底色 */
+            --item-checked-bg: #fff59d;  /* 單行打勾底色 (亮黃) */
         }
 
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
@@ -34,15 +37,12 @@
             backdrop-filter: blur(10px);
             padding: 15px 20px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            text-align: center;
+            position: sticky; top: 0; z-index: 1000; text-align: center;
             border-bottom: 2px dashed #d7ccc8;
         }
         
         .progress-circle {
-            width: 100%; max-width: 800px; margin: 0 auto;
+            width: 100%; max-width: 900px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
         }
         .progress-info { text-align: left; }
@@ -52,34 +52,28 @@
         .bar-bg { width: 120px; height: 10px; background: #efebe9; border-radius: 5px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.5s ease; border-radius: 5px; }
 
-        /* === 🆕 雙欄排版容器 (Grid Layout) === */
+        /* === 🆕 雙欄排版修正 === */
         .container { 
-            max-width: 900px; /* 加寬容器以容納雙欄 */
+            max-width: 1000px; 
             margin: 0 auto; 
             padding: 20px; 
             display: grid;
-            /* 關鍵語法：自動適應，最小卡片寬度 340px，空間夠就放兩張 */
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 20px; /* 卡片間距 */
+            /* 修正點：縮小最小寬度至 280px，讓雙排更容易觸發 */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px; 
             align-items: start;
         }
 
-        /* === 月份分隔線 (全名 + 跨欄) === */
+        /* === 月份分隔線 === */
         .month-header {
-            /* 讓月份標題橫跨整排，不受雙欄影響 */
-            grid-column: 1 / -1; 
-            
+            grid-column: 1 / -1; /* 跨欄 */
             margin: 25px 0 10px 0;
             padding: 8px 25px;
             background: var(--color-month);
             color: #fff;
-            font-weight: 800;
-            font-size: 1.3em;
-            letter-spacing: 2px;
-            border-radius: 50px; /* 圓弧造型 */
-            display: inline-block;
-            text-transform: uppercase;
-            justify-self: center; /* 置中 */
+            font-weight: 800; font-size: 1.3em; letter-spacing: 2px;
+            border-radius: 50px; display: inline-block;
+            text-transform: uppercase; justify-self: center;
             box-shadow: 0 4px 8px rgba(93, 64, 55, 0.2);
         }
 
@@ -88,98 +82,101 @@
             background: white;
             border-radius: 16px;
             padding: 15px 18px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            /* 🆕 更深一點的咖啡色虛線 */
             border: 2px dashed var(--card-border); 
             position: relative;
-            transition: all 0.2s;
-            height: 100%; /* 讓同一列卡片等高 */
-            box-sizing: border-box; /* 確保邊框不會撐大 */
+            transition: all 0.3s ease;
+            height: 100%; box-sizing: border-box;
         }
 
+        /* 今天的高亮 */
         .card.today-highlight { 
-            border: 3px solid #8d6e63; /* 今天改實線 */
+            border: 3px solid #8d6e63; /* 實線 */
             background: #fffdfc;
-            box-shadow: 0 0 20px rgba(121, 85, 72, 0.15);
         }
 
-        /* 卡片標題區 (日期 + 星期) */
+        /* 🆕 當日全完成特效 (閃亮亮) */
+        @keyframes shine {
+            0% { box-shadow: 0 0 5px #ffd700; border-color: #ffd700; }
+            50% { box-shadow: 0 0 20px #ffd700; border-color: #ffb300; }
+            100% { box-shadow: 0 0 5px #ffd700; border-color: #ffd700; }
+        }
+
+        .card.all-done {
+            background-color: var(--highlight-yellow); /* 淡黃底 */
+            border-style: solid; /* 變成實線 */
+            animation: shine 2s infinite; /* 呼吸燈特效 */
+        }
+
+        /* 卡片標題 */
         .card-header { margin-bottom: 12px; border-bottom: 1px solid #f1f1f1; padding-bottom: 10px; }
-        
         .date-badge { 
-            /* 🆕 維持圓弧形 */
-            background: var(--date-bg); 
-            color: #455a64;
-            padding: 5px 15px; 
-            border-radius: 20px; /* 大圓角 */
-            font-size: 0.95em; font-weight: 800; 
-            display: inline-block;
+            background: var(--date-bg); color: #455a64;
+            padding: 5px 15px; border-radius: 20px; 
+            font-size: 0.95em; font-weight: 800; display: inline-block;
         }
-        /* 星期幾的樣式 */
-        .weekday-span { 
-            font-weight: normal; 
-            margin-left: 8px; 
-            color: #8d6e63; 
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .weekday-span { font-weight: normal; margin-left: 8px; color: #8d6e63; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
         
         /* === 經文行 === */
         .scripture-row { 
-            display: flex; align-items: center; padding: 10px 8px; 
-            cursor: pointer; border-radius: 8px; margin-bottom: 6px;
-            transition: background 0.1s; 
-            background: #fafafa; /* 微灰底讓每一行更清楚 */
+            display: flex; align-items: center; padding: 10px 10px; 
+            cursor: pointer; border-radius: 10px; margin-bottom: 6px;
+            transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
         }
-        .scripture-row:active { background: #f0f0f0; }
+        .scripture-row:active { transform: scale(0.98); }
 
         /* 左側標籤 */
         .tag { 
             font-size: 0.75em; padding: 4px 0; border-radius: 6px; 
-            margin-right: 12px; font-weight: bold; flex-shrink: 0;
-            width: 42px; text-align: center;
+            margin-right: 12px; font-weight: bold; flex-shrink: 0; width: 42px; text-align: center;
         }
-        
         .tag.ot { background-color: var(--color-ot); color: white; }
-        
-        /* 🆕 詩篇：淡黃底 + 咖啡字 */
         .tag.psalm { background-color: var(--color-psalm-bg); color: var(--color-psalm-text); }
-        
-        /* 🆕 新約：極淺粉底 + 深粉紅字 */
         .tag.nt { background-color: var(--color-nt-bg); color: var(--color-nt-text); }
         
         .scripture-text { 
             font-size: 1.05em; font-weight: 500; color: #4e342e; flex-grow: 1; 
-            transition: opacity 0.2s;
+            transition: color 0.2s;
         }
 
-        /* 右側打勾框 */
+        /* === 🆕 打勾樣式調整 === */
+        /* 右側星星框 */
         .check-box {
-            width: 22px; height: 22px;
-            border: 2px solid #d7ccc8;
-            border-radius: 6px;
+            width: 24px; height: 24px;
+            border: 2px solid #d7ccc8; border-radius: 50%; /* 圓形 */
             margin-left: 10px;
             display: flex; align-items: center; justify-content: center;
-            color: white;
-            transition: all 0.2s;
-            background: white;
+            color: white; transition: all 0.3s; background: white;
+            font-size: 14px;
         }
         
         /* 完成後的樣式 */
-        .scripture-row.done .scripture-text { opacity: 0.4; text-decoration: line-through; }
-        .scripture-row.done .check-box { background: var(--color-ot); border-color: var(--color-ot); }
-        .scripture-row.done .check-box::after { content: '✔'; font-size: 14px; }
+        .scripture-row.done {
+            background-color: var(--item-checked-bg); /* 亮黃底 */
+            border-color: #ffe082;
+        }
+        .scripture-row.done .scripture-text {
+            color: #5d4037;
+            font-weight: bold;
+            opacity: 1; 
+            text-decoration: none; /* ❌ 移除刪除線 */
+        }
+        .scripture-row.done .check-box { 
+            background: #fdd835; /* 金黃色 */
+            border-color: #fbc02d;
+            color: #fff;
+            box-shadow: 0 0 5px #fdd835;
+        }
+        .scripture-row.done .check-box::after { 
+            content: '★'; /* 🌟 變成星星 */
+            font-size: 16px;
+        }
 
-        /* 心得筆記區 */
+        /* 心得筆記 */
         .note-section {
-            margin-top: 10px;
-            background: var(--color-note);
-            color: #795548;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85em;
-            display: flex;
-            align-items: flex-start;
+            margin-top: 10px; background: var(--color-note); color: #795548;
+            padding: 8px 12px; border-radius: 8px; font-size: 0.85em; display: flex; align-items: flex-start;
         }
         .note-icon { margin-right: 6px; }
 
@@ -211,17 +208,11 @@
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv';
 
     let savedChecks = JSON.parse(localStorage.getItem('bible_checks_v3')) || [];
-
     const now = new Date();
     const todayShort = `${now.getMonth() + 1}/${now.getDate()}`; 
     const todayFull = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
 
-    // 🆕 月份全名
-    const monthNames = [
-        "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", 
-        "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
-    ];
-
+    const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
     const contentDiv = document.getElementById('content');
     let totalItems = 0;
 
@@ -245,37 +236,31 @@
             const dateStr = row['Date'] ? row['Date'].trim() : '';
             if (!dateStr) return;
 
-            // --- 1. 月份與日期處理 ---
+            // 月份與日期處理
             let currentMonthNum = '';
             let displayDate = dateStr;
-            let fullDateObj = null; // 用來計算星期
+            let fullDateObj = null;
 
             if (dateStr.includes('/')) {
                 const parts = dateStr.split('/');
-                // 嘗試解析日期物件以便計算星期
-                // 假設格式是 YYYY/MM/DD 或 MM/DD
                 if(parts.length === 3) {
                     fullDateObj = new Date(dateStr);
                     currentMonthNum = parseInt(parts[1]);
-                    displayDate = `${parts[1]}/${parts[2]}`; // 顯示 月/日
+                    displayDate = `${parts[1]}/${parts[2]}`;
                 } else if(parts.length === 2) {
-                    // 如果只有 1/29，補上今年年份來計算星期
                     fullDateObj = new Date(`${now.getFullYear()}/${dateStr}`);
                     currentMonthNum = parseInt(parts[0]);
                     displayDate = dateStr;
                 }
             }
 
-            // 🆕 計算星期 (English Short)
             let weekdayStr = '';
             if (fullDateObj && !isNaN(fullDateObj)) {
-                weekdayStr = fullDateObj.toLocaleDateString('en-US', { weekday: 'short' }); // e.g., "Mon"
+                weekdayStr = fullDateObj.toLocaleDateString('en-US', { weekday: 'short' });
             } else if (row['Day']) {
-                // 如果無法計算，嘗試使用 CSV 裡的 Day 欄位
                 weekdayStr = row['Day'];
             }
 
-            // 插入月份標題
             if (currentMonthNum && currentMonthNum !== lastMonth) {
                 const engMonth = monthNames[currentMonthNum - 1] || currentMonthNum;
                 const monthTitle = document.createElement('div');
@@ -287,26 +272,28 @@
 
             const isToday = dateStr.includes(todayShort) || dateStr === todayFull;
 
-            // 準備內容
             const ot = row['OT'] || '';
             const psalm = row['Psalm/Proverbs'] || '';
             const nt = row['NT'] || '';
             const notes = row['Notes'] || '';
 
-            if(ot) totalItems++;
-            if(psalm) totalItems++;
-            if(nt) totalItems++;
+            // 計算該日總任務數
+            let dailyTotal = 0;
+            if(ot) dailyTotal++; if(psalm) dailyTotal++; if(nt) dailyTotal++;
+            totalItems += dailyTotal;
 
-            // --- 建立卡片 ---
+            // 建立卡片
             const card = document.createElement('div');
             card.className = `card`;
+            card.dataset.date = dateStr; // 標記日期以便查詢
+            card.dataset.dailyTotal = dailyTotal; // 記錄這一天有幾個任務
+
             if (isToday) {
                 card.classList.add('today-highlight');
                 card.id = 'target-today'; 
                 todayAnchorId = 'target-today';
             }
 
-            // 🆕 組合標題：日期 + 星期
             let html = `
                 <div class="card-header">
                     <div class="date-badge">
@@ -354,6 +341,9 @@
             
             card.innerHTML = html;
             contentDiv.appendChild(card);
+
+            // 初始渲染時檢查是否全完成
+            checkCardCompletion(card);
         });
 
         if (todayAnchorId) {
@@ -366,6 +356,7 @@
         }
     }
 
+    // 點擊事件
     window.toggleItem = function(id, element) {
         if (savedChecks.includes(id)) {
             savedChecks = savedChecks.filter(item => item !== id);
@@ -376,6 +367,22 @@
         }
         localStorage.setItem('bible_checks_v3', JSON.stringify(savedChecks));
         updateStats();
+
+        // 檢查該張卡片是否全完成
+        const card = element.closest('.card');
+        checkCardCompletion(card);
+    }
+
+    // 檢查卡片完成狀態
+    function checkCardCompletion(card) {
+        const doneCount = card.querySelectorAll('.scripture-row.done').length;
+        const totalCount = parseInt(card.dataset.dailyTotal) || 0;
+
+        if (totalCount > 0 && doneCount >= totalCount) {
+            card.classList.add('all-done');
+        } else {
+            card.classList.remove('all-done');
+        }
     }
 
     function updateStats() {
