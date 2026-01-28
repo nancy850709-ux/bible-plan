@@ -12,12 +12,13 @@
             
             /* === 🎨 顏色設定 === */
             --color-ot: #795548;    /* 舊約：咖啡色 */
-            --color-psalm: #ffeaa7; /* 詩篇：柔和黃 */
+            --color-psalm: #81ecec; /* 🆕 詩篇：淺藍色 */
             --color-nt: #ffc3d0;    /* 新約：淡粉色 */
             --color-note: #fff3cd;  /* 筆記：淡黃便利貼 */
             
-            --color-month: #ff9f43; /* 🆕 月份：橘黃色 */
-            --card-border: #e0e0e0; /* 🆕 卡片框線顏色 */
+            --color-month: #5d4037; /* 🆕 月份：深咖啡色 */
+            --card-border: #8d6e63; /* 🆕 卡片邊框：咖啡色 */
+            --date-bg: #fff9c4;     /* 🆕 日期背景：淡黃色 */
         }
 
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
@@ -32,7 +33,7 @@
             top: 0; 
             z-index: 1000; 
             text-align: center;
-            border-bottom: 1px solid #f0e6dd;
+            border-bottom: 1px dashed #d7ccc8;
         }
         
         .progress-circle {
@@ -44,92 +45,111 @@
         .progress-percent { font-size: 1.8em; font-weight: 800; color: var(--color-ot); }
         
         .bar-bg { width: 100px; height: 8px; background: #efebe9; border-radius: 4px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.8s ease; }
+        .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.5s ease; }
 
         .container { max-width: 600px; margin: 0 auto; padding: 10px 20px; }
 
-        /* === 月份分隔線 (橘黃色) === */
+        /* === 月份分隔線 (英文 + 咖啡色) === */
         .month-header {
-            margin: 25px 0 15px 0;
-            padding: 8px 18px;
-            background: var(--color-month); /* 使用橘黃色 */
-            color: white;
-            font-weight: bold;
-            font-size: 1.1em;
-            border-radius: 20px;
+            margin: 30px 0 15px 0;
+            padding: 5px 20px;
+            background: var(--color-month);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            border-radius: 4px;
             display: inline-block;
-            box-shadow: 0 3px 8px rgba(255, 159, 67, 0.3);
+            text-transform: uppercase;
         }
 
-        /* === 卡片設計 (加強框線) === */
+        /* === 卡片設計 (咖啡色虛線邊框) === */
         .card { 
             background: white;
-            border-radius: 18px;
-            padding: 18px;
+            border-radius: 12px;
+            padding: 15px 18px;
             margin-bottom: 18px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
             
-            /* 🆕 這裡設定了明顯的框線 */
-            border: 2px solid var(--card-border); 
+            /* 🆕 設定為咖啡色虛線 */
+            border: 2px dashed var(--card-border); 
             
             position: relative;
-            transition: transform 0.2s;
-            cursor: pointer;
+            transition: all 0.2s;
         }
-        .card:active { transform: scale(0.98); }
 
-        /* 完成狀態 */
-        .card.completed { opacity: 0.6; background: #fcfcfc; border-color: #eee; }
-        .card.completed .date-badge { background: #d7ccc8; }
-        .card.completed .check-icon { background: var(--color-ot); border-color: var(--color-ot); color: white; }
-
-        /* 今日特別樣式 (加粗邊框強調) */
+        /* 今日特別樣式 (實線強調) */
         .card.today-highlight { 
-            border: 3px solid #8d6e63; /* 今天用深咖啡色框起來 */
+            border: 3px solid #8d6e63; /* 今天改回實線比較明顯 */
             background: #fffdfc;
-            box-shadow: 0 0 20px rgba(121, 85, 72, 0.15);
+            box-shadow: 0 0 20px rgba(121, 85, 72, 0.1);
         }
 
-        /* 卡片內部排版 */
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        /* 卡片標題區 */
+        .card-header { margin-bottom: 10px; border-bottom: 1px solid #f1f1f1; padding-bottom: 8px; }
         .date-badge { 
-            background: #8d6e63; color: white; 
-            padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: bold; 
+            background: var(--date-bg); 
+            color: #5d4037; /* 深咖啡文字 */
+            padding: 4px 10px; border-radius: 6px; 
+            font-size: 0.9em; font-weight: 800; 
+            display: inline-block;
         }
-        .check-icon {
-            width: 24px; height: 24px; border: 2px solid #efebe9; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; color: transparent; transition: all 0.2s;
+        
+        /* === 經文行 (點擊區域) === */
+        .scripture-row { 
+            display: flex; 
+            align-items: center; 
+            padding: 8px 0; 
+            cursor: pointer; /* 讓整行變成手指圖案 */
+            border-radius: 6px;
+            transition: background 0.1s;
         }
+        .scripture-row:active { background: #f5f5f5; }
 
-        /* 經文區塊 */
-        .scripture-row { display: flex; align-items: baseline; margin-bottom: 8px; }
+        /* 左側標籤 */
         .tag { 
-            font-size: 0.75em; padding: 3px 8px; border-radius: 8px; 
-            margin-right: 10px; font-weight: bold; flex-shrink: 0;
+            font-size: 0.75em; padding: 3px 0; border-radius: 6px; 
+            margin-right: 12px; font-weight: bold; flex-shrink: 0;
             width: 40px; text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .tag.ot { background-color: var(--color-ot); color: white; }
-        .tag.psalm { background-color: var(--color-psalm); color: #7f6000; }
+        .tag.psalm { background-color: var(--color-psalm); color: #006064; } /* 淺藍底配深藍字 */
         .tag.nt { background-color: var(--color-nt); color: #c2185b; }
         
-        .scripture-text { font-size: 1.05em; font-weight: 500; color: #4e342e; }
+        .scripture-text { 
+            font-size: 1.05em; font-weight: 500; color: #4e342e; flex-grow: 1; 
+            transition: opacity 0.2s;
+        }
+
+        /* === 右側打勾框 (Checkbox) === */
+        .check-box {
+            width: 22px; height: 22px;
+            border: 2px solid #d7ccc8;
+            border-radius: 6px;
+            margin-left: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        /* 完成後的樣式 */
+        .scripture-row.done .scripture-text { opacity: 0.4; text-decoration: line-through; }
+        .scripture-row.done .check-box { background: var(--color-ot); border-color: var(--color-ot); }
+        .scripture-row.done .check-box::after { content: '✔'; font-size: 14px; }
 
         /* 心得筆記區 */
         .note-section {
-            margin-top: 12px;
+            margin-top: 10px;
             background: var(--color-note);
             color: #795548;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 0.9em;
-            line-height: 1.4;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
             display: flex;
             align-items: flex-start;
         }
-        .note-icon { margin-right: 6px; font-size: 1.1em; }
+        .note-icon { margin-right: 6px; }
 
         #status { text-align: center; padding: 30px; color: #bcaaa4; }
     </style>
@@ -139,7 +159,7 @@
 <header>
     <div class="progress-circle">
         <div class="progress-info">
-            <div class="progress-title">讀經進度</div>
+            <div class="progress-title">總進度</div>
             <div class="progress-percent" id="percent-text">0%</div>
         </div>
         <div class="bar-bg">
@@ -156,27 +176,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
 <script>
-    // 你的 Google Sheet 連結
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv';
 
-    // 讀取本地紀錄
-    let savedChecks = JSON.parse(localStorage.getItem('bible_checks_v2')) || [];
+    // 儲存格式改成： "日期_類型"，例如 "2026/1/29_ot"
+    let savedChecks = JSON.parse(localStorage.getItem('bible_checks_v3')) || [];
 
     const now = new Date();
     const todayShort = `${now.getMonth() + 1}/${now.getDate()}`; 
     const todayFull = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
 
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
     const contentDiv = document.getElementById('content');
-    let totalCount = 0;
+    
+    // 用來計算總任務數 (每天有幾個有效進度)
+    let totalItems = 0;
 
     Papa.parse(sheetURL, {
         download: true, header: true, skipEmptyLines: true,
         complete: function(results) {
             document.getElementById('status').style.display = 'none';
             if (results.data && results.data.length > 0) {
-                totalCount = results.data.length;
                 renderList(results.data);
-                updateStats();
+                updateStats(); // 初始計算
             }
         }
     });
@@ -184,58 +206,113 @@
     function renderList(data) {
         let lastMonth = '';
         let todayAnchorId = ''; 
+        totalItems = 0; // 重置計數
 
         data.forEach((row, index) => {
             const dateStr = row['Date'] ? row['Date'].trim() : '';
             if (!dateStr) return;
 
-            // 處理月份分隔線
-            let currentMonth = '';
+            // --- 1. 月份處理 (轉英文) ---
+            let currentMonthNum = '';
+            let displayDate = dateStr; // 預設顯示原始日期
+
+            // 嘗試解析日期字串，提取月份和日 (假設格式包含 /)
             if (dateStr.includes('/')) {
                 const parts = dateStr.split('/');
-                if (parts.length === 3) currentMonth = parts[1];
-                else if (parts.length === 2) currentMonth = parts[0];
+                if (parts.length >= 2) {
+                    // 如果是 2026/1/29 -> month=1, day=29
+                    // 如果是 1/29 -> month=1, day=29
+                    // 取倒數第二個當月，倒數第一個當日
+                    currentMonthNum = parseInt(parts[parts.length - 2]); 
+                    const dayNum = parts[parts.length - 1];
+                    
+                    // 設定卡片上只顯示 "月/日"
+                    displayDate = `${currentMonthNum}/${dayNum}`;
+                }
             }
 
-            if (currentMonth && currentMonth !== lastMonth) {
+            // 插入月份標題
+            if (currentMonthNum && currentMonthNum !== lastMonth) {
+                const engMonth = monthNames[currentMonthNum - 1] || currentMonthNum;
                 const monthTitle = document.createElement('div');
                 monthTitle.className = 'month-header';
-                monthTitle.innerText = `${currentMonth} 月`;
+                monthTitle.innerText = `${engMonth}`; // 顯示英文月份
                 contentDiv.appendChild(monthTitle);
-                lastMonth = currentMonth;
+                lastMonth = currentMonthNum;
             }
 
+            // --- 2. 判斷今天 ---
             const isToday = dateStr.includes(todayShort) || dateStr === todayFull;
-            const isChecked = savedChecks.includes(dateStr);
 
+            // --- 3. 準備內容 ---
             const ot = row['OT'] || '';
             const psalm = row['Psalm/Proverbs'] || '';
             const nt = row['NT'] || '';
             const notes = row['Notes'] || '';
 
+            // 計算總共有幾個勾勾 (為了進度條)
+            if(ot) totalItems++;
+            if(psalm) totalItems++;
+            if(nt) totalItems++;
+
+            // --- 4. 建立卡片 HTML ---
             const card = document.createElement('div');
-            card.className = `card ${isChecked ? 'completed' : ''}`;
+            card.className = `card`;
             if (isToday) {
                 card.classList.add('today-highlight');
                 card.id = 'target-today'; 
                 todayAnchorId = 'target-today';
             }
 
-            card.onclick = () => toggleCheck(card, dateStr);
-
-            card.innerHTML = `
+            // 組合 HTML：分別建立三個可點擊的行
+            let html = `
                 <div class="card-header">
-                    <span class="date-badge">${dateStr}</span>
-                    <div class="check-icon">✔</div>
+                    <span class="date-badge">${displayDate}</span>
                 </div>
-                
-                ${ot ? `<div class="scripture-row"><span class="tag ot">舊約</span><span class="scripture-text">${ot}</span></div>` : ''}
-                ${psalm ? `<div class="scripture-row"><span class="tag psalm">詩篇</span><span class="scripture-text">${psalm}</span></div>` : ''}
-                ${nt ? `<div class="scripture-row"><span class="tag nt">新約</span><span class="scripture-text">${nt}</span></div>` : ''}
-                
-                ${notes ? `<div class="note-section"><span class="note-icon">📝</span>${notes}</div>` : ''}
             `;
+
+            // 舊約行
+            if(ot) {
+                const id = `${dateStr}_ot`;
+                const isDone = savedChecks.includes(id);
+                html += `
+                    <div class="scripture-row ${isDone?'done':''}" onclick="toggleItem('${id}', this)">
+                        <span class="tag ot">舊約</span>
+                        <span class="scripture-text">${ot}</span>
+                        <div class="check-box"></div>
+                    </div>`;
+            }
+
+            // 詩篇行
+            if(psalm) {
+                const id = `${dateStr}_psalm`;
+                const isDone = savedChecks.includes(id);
+                html += `
+                    <div class="scripture-row ${isDone?'done':''}" onclick="toggleItem('${id}', this)">
+                        <span class="tag psalm">詩篇</span>
+                        <span class="scripture-text">${psalm}</span>
+                        <div class="check-box"></div>
+                    </div>`;
+            }
+
+            // 新約行
+            if(nt) {
+                const id = `${dateStr}_nt`;
+                const isDone = savedChecks.includes(id);
+                html += `
+                    <div class="scripture-row ${isDone?'done':''}" onclick="toggleItem('${id}', this)">
+                        <span class="tag nt">新約</span>
+                        <span class="scripture-text">${nt}</span>
+                        <div class="check-box"></div>
+                    </div>`;
+            }
+
+            // 心得
+            if(notes) {
+                html += `<div class="note-section"><span class="note-icon">📝</span>${notes}</div>`;
+            }
             
+            card.innerHTML = html;
             contentDiv.appendChild(card);
         });
 
@@ -247,31 +324,28 @@
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 600);
-        } else {
-            setTimeout(() => {
-                const firstUnchecked = document.querySelector('.card:not(.completed)');
-                if (firstUnchecked) {
-                    firstUnchecked.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 600);
         }
     }
 
-    function toggleCheck(card, dateID) {
-        if (savedChecks.includes(dateID)) {
-            savedChecks = savedChecks.filter(id => id !== dateID);
-            card.classList.remove('completed');
+    // 處理單個項目的打勾 (不再是整張卡片)
+    window.toggleItem = function(id, element) {
+        if (savedChecks.includes(id)) {
+            // 取消打勾
+            savedChecks = savedChecks.filter(item => item !== id);
+            element.classList.remove('done');
         } else {
-            savedChecks.push(dateID);
-            card.classList.add('completed');
+            // 打勾
+            savedChecks.push(id);
+            element.classList.add('done');
         }
-        localStorage.setItem('bible_checks_v2', JSON.stringify(savedChecks));
+        localStorage.setItem('bible_checks_v3', JSON.stringify(savedChecks));
         updateStats();
     }
 
     function updateStats() {
         const checkedCount = savedChecks.length;
-        const percent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+        // 計算百分比
+        const percent = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
         
         document.getElementById('percent-text').innerText = percent + '%';
         document.getElementById('bar-fill').style.width = percent + '%';
