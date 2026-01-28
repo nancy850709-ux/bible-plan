@@ -9,7 +9,7 @@
     
     <style>
         :root {
-            /* === 🎨 顏色設定 (V32) === */
+            /* === 🎨 顏色設定 (V33) === */
             
             /* Body 背景：清透奶油黃 */
             --bg-base: #fffbf0;       
@@ -33,12 +33,12 @@
             --date-bg: #eceff1;       
             --color-rest: #607d8b;    
             
-            /* 🆕 行背景回歸淡拿鐵色 */
+            /* 行背景回歸淡拿鐵色 */
             --item-checked-bg: #f2ece4;  
             --item-checked-border: #e0d4c6; 
 
-            /* 🆕 圓圈圈實心暖黃色 */
-            --checkbox-solid-bg: #fbc02d;
+            /* 🆕 圓圈圈實心暖黃色 (修正版：更黃、不橘) */
+            --checkbox-solid-bg: #ffd230;
         }
 
         body { 
@@ -91,6 +91,7 @@
             letter-spacing: 0.5px;
             line-height: 1;
             text-transform: uppercase;
+            /* 標題底框 */
             background: rgba(255,255,255,0.85); 
             padding: 3px 6px;
             display: inline-block;
@@ -232,12 +233,10 @@
             line-height: 1;
         }
         
-        /* 🆕 完成後行背景 (淡拿鐵色) */
         .scripture-row.done { 
             background-color: var(--item-checked-bg); 
             border-color: var(--item-checked-border); 
         }
-        
         .scripture-row.done .scripture-text { 
             color: #5d4037; 
             font-weight: 600; 
@@ -246,12 +245,12 @@
         }
         .scripture-row.hide-tag .tag { display: none; }
         
-        /* 🆕 完成後圓圈圈 (實心黃 + 白字) */
+        /* 🆕 打勾後：暖陽黃底色 + 白色圖樣 */
         .scripture-row.done .check-box { 
             background: var(--checkbox-solid-bg); 
             border-color: var(--checkbox-solid-bg); 
-            color: white; /* 星星變白色 */
-            box-shadow: 0 2px 6px rgba(251, 192, 45, 0.4); /* 增加一點發光感 */
+            color: white; 
+            box-shadow: 0 2px 6px rgba(255, 210, 48, 0.4); 
         }
         
         .note-section {
@@ -301,8 +300,8 @@
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
-    /* 星星與幾何符號 */
-    const icons = ['✔', '†', '★', '✨', '✶', '✴', '✦'];
+    /* 🆕 只保留指定的四種符號：星、芒、愛心、十字架 */
+    const icons = ['★', '✦', '♥', '†'];
 
     const contentDiv = document.getElementById('content');
     let totalItems = 0;
