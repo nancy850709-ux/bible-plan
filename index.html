@@ -9,9 +9,13 @@
     
     <style>
         :root {
-            /* === 🎨 顏色設定 === */
-            --bg-base: #fffbf0;       
-            --dot-color: #eaddcf;     
+            /* === 🎨 顏色設定 (V27 更新) === */
+            /* Body 背景設定：奶茶色 + 深一點的點點 */
+            --bg-base: #eddfd2;       /* 🆕 奶茶色底 */
+            --dot-color: #d4c5b9;     /* 🆕 深拿鐵色點點 (為了在奶茶色上顯色) */
+            
+            /* Header 背景設定：暖黃色 */
+            --header-bg: #f9edcd;     /* 🆕 暖奶油黃 */
             
             --primary: #5d4037;       
             
@@ -35,21 +39,22 @@
             font-family: 'Klee One', 'Noto Sans TC', sans-serif; 
             
             margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px;
+            /* 使用新的奶茶色背景和點點 */
             background-color: var(--bg-base);
             background-image: radial-gradient(var(--dot-color) 2px, transparent 2px);
             background-size: 24px 24px; 
             letter-spacing: 0.5px;
         }
         
-        /* === Header (奶茶色背景 + 白色格紋) === */
+        /* === Header (暖黃色背景 + 白色格紋) === */
         header { 
-            /* 1. 設定奶茶色底 */
-            background-color: #eddfd2;
+            /* 1. 設定暖黃色底 */
+            background-color: var(--header-bg);
             
             /* 2. 設定白色格紋 (使用 rgba 白色半透明) */
             background-image: 
-                linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px);
             background-size: 20px 20px;
             
             padding: 15px 20px; 
@@ -83,12 +88,11 @@
             letter-spacing: 0.5px;
             line-height: 1;
             text-transform: uppercase;
-            /* 讓白色底框在奶茶色背景上更跳 */
             background: rgba(255,255,255,0.9); 
             padding: 3px 6px;
             display: inline-block;
             border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 加一點點陰影增加層次 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .signature {
@@ -104,18 +108,16 @@
             font-family: 'Playfair Display', serif; 
             font-style: italic; 
             font-size: 0.8em; 
-            color: #8d6e63; /* 字色微調深一點，在奶茶色上比較清楚 */
+            color: #8d6e63;
             margin-top: 6px;
             display: block;
             line-height: 1.3;
             white-space: normal; 
-            /* 移除原本的半透明背景，直接顯示在格紋上更有質感，或者改用極淡白色 */
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.8); /* 白色描邊效果 */
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
         }
 
         /* === 右側：進度條 === */
         .progress-compact {
-            /* 增加不透明度，讓它在奶茶背景上更乾淨 */
             background: #ffffff; 
             padding: 8px 10px;
             border-radius: 10px;
