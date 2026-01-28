@@ -4,68 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>| 2026 Bible Project | - Nancy Hsu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital@0;1&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #fdfbf7;
-            --primary: #4a4a4a;
-            
             /* === 🎨 顏色設定 === */
+            --bg-base: #fffbf0;       /* 🆕 背景底色：溫暖的奶油黃 */
+            --dot-color: #eaddcf;     /* 🆕 點點顏色：淺拿鐵色 */
+            
+            --primary: #5d4037;       /* 主文字色：深咖啡 */
+            
             --color-ot: #a1887f;      /* 舊約 */
             --color-psalm-bg: #fff9c4; 
             --color-psalm-text: #5d4037; 
             --color-nt-bg: #fff5f8;    
             --color-nt-text: #c2185b;  
             --color-note: #fff3cd;    
-            --color-month: #5d4037;   
-            --card-border: #5d4037;   
+            
+            --color-month: #8d6e63;   /* 🆕 月份顏色：改淺一點的柔和棕 */
+            --card-border: #8d6e63;   
             --date-bg: #eceff1;       
             --color-rest: #607d8b;    
             --item-checked-bg: #fffff0;  
         }
 
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px;
+            
+            /* === 🆕 背景：溫暖淡黃色點點 === */
+            background-color: var(--bg-base);
+            background-image: radial-gradient(var(--dot-color) 2px, transparent 2px);
+            background-size: 24px 24px; /* 點點的大小與間距 */
+        }
         
         header { 
-            /* === 3. 新增格紋背景 === */
             background-color: #ffffff;
-            /* 使用 CSS 繪製淡米色格紋 */
+            /* 頂部維持格紋 */
             background-image: 
                 linear-gradient(#f0e6dd 1px, transparent 1px), 
                 linear-gradient(90deg, #f0e6dd 1px, transparent 1px);
-            background-size: 20px 20px; /* 格子大小 */
+            background-size: 20px 20px;
             
-            padding: 25px 20px 20px 20px; 
+            padding: 20px 20px 15px 20px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
             position: sticky; top: 0; z-index: 1000; text-align: center;
             border-bottom: 2px dashed #d7ccc8;
         }
 
         .main-title {
-            font-size: 1.6em; 
+            font-size: 1.5em; 
             font-weight: 800; 
             color: #5d4037; 
-            margin-bottom: 8px; 
+            margin-bottom: 5px; 
             letter-spacing: 1px;
-            /* 讓標題有白色底色塊，避免被格紋干擾太嚴重，增加層次 */
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.85);
             display: inline-block;
-            padding: 5px 15px;
+            padding: 4px 12px;
             border-radius: 8px;
         }
 
-        /* === 4. Nancy Hsu 簽名樣式 === */
+        /* 簽名樣式 */
         .signature {
-            font-family: 'Dancing Script', cursive; /* 手寫體 */
-            font-size: 0.8em; /* 字小一點 */
+            font-family: 'Dancing Script', cursive; 
+            font-size: 0.9em; 
             color: #8d6e63;
             margin-left: 8px;
             font-weight: normal;
         }
 
         .subtitle {
-            font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95em; color: #8d6e63; margin-bottom: 20px; line-height: 1.5;
-            text-shadow: 1px 1px 0 #fff; /* 增加文字白邊，更清晰 */
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.9em; color: #8d6e63; margin-bottom: 15px; line-height: 1.4;
+            text-shadow: 2px 2px 0 #fff;
         }
         .verse-ref {
             font-size: 0.85em; font-weight: bold; display: block; margin-top: 4px; color: #a1887f;
@@ -74,63 +83,89 @@
         .progress-circle {
             width: 100%; max-width: 600px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255,255,255,0.9); /* 進度條背景加一點白底 */
-            padding: 10px 15px;
+            background: rgba(255,255,255,0.95); 
+            padding: 8px 15px; /* 縮小一點高度 */
             border-radius: 12px;
+            border: 1px solid #efebe9;
         }
-        .progress-title { font-size: 0.85em; color: #bcaaa4; margin-bottom: 2px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
-        .progress-percent { font-size: 1.8em; font-weight: 800; color: var(--color-ot); }
+        .progress-title { font-size: 0.8em; color: #bcaaa4; margin-bottom: 2px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+        .progress-percent { font-size: 1.6em; font-weight: 800; color: var(--color-ot); }
         .bar-bg { width: 120px; height: 8px; background: #efebe9; border-radius: 4px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.5s ease; border-radius: 4px; }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; display: block; }
 
+        /* === 🆕 月份分隔線 (縮小、換字體) === */
         .month-header {
-            margin: 35px auto 15px auto; padding: 8px 25px; background: var(--color-month); color: #fff;
-            font-weight: 800; font-size: 1.3em; letter-spacing: 2px; border-radius: 50px; display: table;
-            text-transform: uppercase; box-shadow: 0 4px 8px rgba(93, 64, 55, 0.2);
+            margin: 30px auto 12px auto; 
+            padding: 5px 20px; /* 縮小內距 */
+            background: var(--color-month); 
+            color: #fff;
+            
+            /* 改用優雅的字體 */
+            font-family: 'Playfair Display', serif; 
+            font-weight: 600; 
+            font-size: 1.1em; /* 字體縮小 */
+            
+            letter-spacing: 1px; border-radius: 50px; display: table;
+            text-transform: uppercase; box-shadow: 0 3px 6px rgba(93, 64, 55, 0.15);
         }
 
+        /* === 🆕 卡片更緊湊 === */
         .card { 
-            background: white; border-radius: 16px; padding: 15px 20px; margin-bottom: 20px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02); border: 2px dashed var(--card-border); 
+            background: white; border-radius: 14px; 
+            /* 縮小卡片內距 */
+            padding: 12px 16px; 
+            /* 縮小卡片間距 */
+            margin-bottom: 14px; 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.02); 
+            border: 2px dashed var(--card-border); 
             position: relative; transition: all 0.3s ease;
         }
 
         .card.today-highlight { border: 3px solid #8d6e63; background: #fffdfc; }
         
-        .card-header { margin-bottom: 10px; border-bottom: 1px solid #f1f1f1; padding-bottom: 10px; }
-        .date-badge { 
-            background: var(--date-bg); color: #455a64; padding: 4px 15px; border-radius: 20px; 
-            font-size: 0.95em; font-weight: 800; display: inline-block;
-        }
-        .weekday-span { font-weight: normal; margin-left: 8px; color: #8d6e63; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
+        /* 縮小 Header 間距 */
+        .card-header { margin-bottom: 6px; border-bottom: 1px solid #f1f1f1; padding-bottom: 6px; }
         
+        .date-badge { 
+            background: var(--date-bg); color: #546e7a; 
+            padding: 3px 12px; border-radius: 15px; 
+            font-size: 0.9em; font-weight: 800; display: inline-block;
+        }
+        .weekday-span { font-weight: normal; margin-left: 6px; color: #8d6e63; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
+        
+        /* === 🆕 經文行距縮小 === */
         .scripture-row { 
-            display: flex; align-items: center; padding: 8px 10px; cursor: pointer; border-radius: 8px; 
-            margin-bottom: 6px; transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
-            min-height: 40px; 
+            display: flex; align-items: center; 
+            padding: 5px 8px; /* 縮小內距 */
+            cursor: pointer; border-radius: 6px; 
+            margin-bottom: 3px; /* 縮小行距 */
+            transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
+            min-height: 32px; /* 縮小最小高度 */
         }
         .scripture-row:active { transform: scale(0.99); }
 
         .tag { 
-            font-size: 0.75em; padding: 3px 0; border-radius: 6px; 
-            margin-right: 12px; font-weight: bold; flex-shrink: 0; min-width: 42px; text-align: center;
+            font-size: 0.75em; padding: 2px 0; border-radius: 4px; 
+            margin-right: 10px; font-weight: bold; flex-shrink: 0; min-width: 40px; text-align: center;
             transition: opacity 0.3s;
         }
         .tag.ot { background-color: var(--color-ot); color: white; }
         .tag.psalm { background-color: var(--color-psalm-bg); color: var(--color-psalm-text); }
         .tag.nt { background-color: var(--color-nt-bg); color: var(--color-nt-text); }
-        .tag.rest { background-color: var(--color-rest); color: white; width: auto; padding: 3px 8px; }
+        .tag.rest { background-color: var(--color-rest); color: white; width: auto; padding: 2px 6px; }
 
         .scripture-text { 
             font-size: 1.05em; font-weight: 500; color: #4e342e; flex-grow: 1; transition: color 0.2s;
+            line-height: 1.3; /* 微調行高 */
         }
 
         .check-box {
-            width: 24px; height: 24px; border: 2px solid #d7ccc8; border-radius: 50%;
-            margin-left: 10px; display: flex; align-items: center; justify-content: center;
-            color: #fbc02d; transition: all 0.3s; background: white; font-size: 16px; line-height: 1;
+            width: 22px; height: 22px; /* 稍微縮小框框 */
+            border: 2px solid #d7ccc8; border-radius: 50%;
+            margin-left: 8px; display: flex; align-items: center; justify-content: center;
+            color: #fbc02d; transition: all 0.3s; background: white; font-size: 14px; line-height: 1;
         }
         
         /* 完成樣式 */
@@ -145,10 +180,10 @@
         }
         
         .note-section {
-            margin-top: 10px; background: var(--color-note); color: #795548;
-            padding: 8px 12px; border-radius: 8px; font-size: 0.85em; display: flex; align-items: flex-start;
+            margin-top: 6px; background: var(--color-note); color: #795548;
+            padding: 6px 10px; border-radius: 6px; font-size: 0.85em; display: flex; align-items: flex-start;
         }
-        .note-icon { margin-right: 6px; }
+        .note-icon { margin-right: 5px; }
 
         #status { text-align: center; padding: 30px; color: #bcaaa4; }
     </style>
@@ -157,7 +192,7 @@
 
 <header>
     <div class="main-title">
-        | 2026 Bible Project | <span class="signature">- Nancy Hsu</span>
+        | 2026 Bible Project | <span class="signature">Nancy Hsu</span>
     </div>
     
     <div class="subtitle">
@@ -191,7 +226,7 @@
     const todayShort = `${now.getMonth() + 1}/${now.getDate()}`; 
     const todayFull = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
 
-    const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const icons = ['★', '❤', '😊', '🐻', '🌞', '✝', '🕊', '🌿', '✨', '🎵'];
 
     const contentDiv = document.getElementById('content');
@@ -341,7 +376,6 @@
         let displayText = text;
         let rowClass = "";
 
-        // 智慧隱藏邏輯
         if (text.includes('已完成')) {
             rowClass = "hide-tag"; 
             displayText = displayText.replace(/（已完成）|已完成/g, '');
