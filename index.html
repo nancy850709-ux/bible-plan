@@ -21,7 +21,7 @@
             --card-border: #5d4037;   
             --date-bg: #eceff1;       
             --color-rest: #607d8b;    
-            --item-checked-bg: #fffff0;  /* 打勾後的極淡奶油黃 */
+            --item-checked-bg: #fffff0;  
         }
 
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
@@ -71,9 +71,6 @@
 
         .card.today-highlight { border: 3px solid #8d6e63; background: #fffdfc; }
         
-        /* 移除卡片全完成後的變色特效，保持原樣 */
-        /* .card.all-done { ... } 已移除 */
-
         .card-header { margin-bottom: 10px; border-bottom: 1px solid #f1f1f1; padding-bottom: 10px; }
         .date-badge { 
             background: var(--date-bg); color: #455a64; padding: 4px 15px; border-radius: 20px; 
@@ -84,6 +81,7 @@
         .scripture-row { 
             display: flex; align-items: center; padding: 8px 10px; cursor: pointer; border-radius: 8px; 
             margin-bottom: 6px; transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
+            min-height: 40px; 
         }
         .scripture-row:active { transform: scale(0.99); }
 
@@ -107,12 +105,9 @@
             color: #fbc02d; transition: all 0.3s; background: white; font-size: 16px; line-height: 1;
         }
         
-        /* === 修正完成樣式 === */
-        /* 1. 打勾的那一行保留反黃 */
+        /* 完成樣式 */
         .scripture-row.done { background-color: var(--item-checked-bg); border-color: #fff9c4; }
         .scripture-row.done .scripture-text { color: #5d4037; font-weight: bold; opacity: 1; text-decoration: none; }
-        
-        /* 2. 標題不會消失 (移除了 display: none) */
         
         .scripture-row.done .check-box { 
             background: white; border-color: #fbc02d; box-shadow: 0 0 5px rgba(251, 192, 45, 0.3);
@@ -231,15 +226,25 @@
             }
 
             const isToday = dateStr.includes(todayShort) || dateStr === todayFull;
-            const ot = row['OT'] || '';
-            const psalm = row['Psalm/Proverbs'] || '';
-            const nt = row['NT'] || '';
+            
+            // === 🆕 關鍵修正：預處理資料 ===
+            // 如果內容包含「已完成」，直接把它清空，這樣後面的程式碼就會當作它不存在
+            let ot = row['OT'] || '';
+            let psalm = row['Psalm/Proverbs'] || '';
+            let nt = row['NT'] || '';
             const notes = row['Notes'] || '';
+
+            if (ot.includes('已完成')) ot = '';
+            if (psalm.includes('已完成')) psalm = '';
+            if (nt.includes('已完成')) nt = '';
 
             const allContent = [ot, psalm, nt].filter(Boolean).join(' ');
             const isRestDay = /休息|補進度|Rest|Catch/i.test(allContent);
 
             let dailyTotal = isRestDay ? 1 : ((ot?1:0) + (psalm?1:0) + (nt?1:0));
+            
+            // 如果這一天全部都清空了（例如舊約新約都已完成），那就略過整張卡片，或只顯示空卡片？
+            // 這裡選擇：只要還有內容就顯示，總數加上去
             totalItems += dailyTotal;
 
             const card = document.createElement('div');
@@ -268,9 +273,10 @@
                 const restText = allContent || "本日休息 / 補進度";
                 html += createRowHtml(id, isDone, 'rest', '☕ 調整', restText, dailyIcon);
             } else {
+                // 只有當 ot/psalm/nt 不為空時，才會建立那一行
+                // 因為前面已經把「已完成」清空了，所以這裡自動不會產生那一行
                 if(ot) html += createRowHtml(`${dateStr}_ot`, savedChecks.includes(`${dateStr}_ot`), 'ot', '舊約', ot, dailyIcon);
                 
-                // 智慧判斷：是詩篇還是箴言？
                 if(psalm) {
                     let label = '詩篇';
                     if(psalm.includes('箴') || psalm.includes('Proverbs')) {
@@ -286,6 +292,8 @@
                 html += `<div class="note-section"><span class="note-icon">📝</span>${notes}</div>`;
             }
             
+            // 如果這張卡片裡完全沒有任務（都已完成），也可以選擇不 append card
+            // 這裡保留卡片（因為可能有筆記），但如果全空看起來會只有標題
             card.innerHTML = html;
             contentDiv.appendChild(card);
             checkCardCompletion(card);
@@ -303,18 +311,9 @@
 
     function createRowHtml(id, isDone, type, label, text, icon) {
         const iconHtml = isDone ? icon : '';
-        
-        // === 🆕 這裡加入邏輯：如果內容包含「已完成」，就不顯示標籤 (span.tag) ===
-        // 注意：我們不在 CSS 隱藏，而是直接在這裡決定要不要產生那個 span
-        let tagHtml = `<span class="tag ${type}">${label}</span>`;
-        
-        if (text.includes('已完成')) {
-            tagHtml = ''; // 隱藏標籤
-        }
-
         return `
             <div class="scripture-row ${isDone?'done':''}" onclick="toggleItem('${id}', this, '${icon}')">
-                ${tagHtml}
+                <span class="tag ${type}">${label}</span>
                 <span class="scripture-text">${text}</span>
                 <div class="check-box">${iconHtml}</div>
             </div>`;
