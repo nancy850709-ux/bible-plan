@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>| 2026 Bible Project | - Nancy Hsu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Dancing+Script:wght@500&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             /* === 🎨 顏色設定 === */
@@ -35,7 +35,7 @@
             background-size: 24px 24px; 
         }
         
-        /* === 🆕 Header 緊湊版設計 === */
+        /* === Header 設定 === */
         header { 
             background-color: #ffffff;
             background-image: 
@@ -43,77 +43,94 @@
                 linear-gradient(90deg, #f0e6dd 1px, transparent 1px);
             background-size: 20px 20px;
             
-            /* 減少內距 */
             padding: 15px 20px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
             position: sticky; top: 0; z-index: 1000; 
             border-bottom: 2px dashed #d7ccc8;
         }
 
-        /* 使用 Flexbox 讓標題跟進度條左右排 */
+        /* 🆕 Flexbox 強制並排設定 */
         .header-content {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* 手機過窄時自動換行 */
-            gap: 15px;
+            align-items: center; /* 垂直置中 */
+            flex-wrap: nowrap;   /* ❌ 禁止換行：確保進度條永遠在右邊 */
+            gap: 15px;           /* 兩者之間的間距 */
         }
 
+        /* 左側區塊：佔據剩餘空間 */
         .header-left {
             text-align: left;
-            flex-grow: 1;
+            flex: 1;         /* 自動伸展 */
+            min-width: 0;    /* 防止文字過長撐爆版面 */
         }
 
-        /* 🆕 主標題更換字體 */
+        /* 主標題 */
         .main-title {
-            font-family: 'Cormorant Garamond', serif; /* 新字體：古典襯線體 */
-            font-size: 1.6em; 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 1.5em; /* 手機上稍微縮一點點以防太擠 */
             font-weight: 700; 
             color: #5d4037; 
-            letter-spacing: 1px;
-            line-height: 1.1;
+            letter-spacing: 0.5px;
+            line-height: 1;
             text-transform: uppercase;
             background: rgba(255,255,255,0.8);
-            padding: 2px 5px;
+            padding: 2px 0; /* 減少內距 */
+            display: inline-block;
             border-radius: 4px;
         }
 
-        /* 🆕 簽名換行 */
+        /* 簽名 */
         .signature {
-            display: block; /* 強制換行 */
+            display: block; 
             font-family: 'Dancing Script', cursive; 
             font-size: 1.1em; 
             color: #8d6e63;
-            margin-top: 4px; 
+            margin-top: 2px; 
             margin-left: 2px;
         }
 
-        /* 隱藏經文副標題以節省空間，或者縮很小 */
+        /* 🆕 副標題：完整保留 */
         .subtitle {
-            font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 0.75em; color: #a1887f; 
-            margin-top: 5px;
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+            font-size: 0.8em; 
+            color: #a1887f; 
+            margin-top: 6px;
             display: block;
+            line-height: 1.3;
+            /* 讓長文字在手機上自動換行，不會撐壞版面 */
+            white-space: normal; 
         }
 
-        /* === 🆕 進度條縮小並移到右側 === */
+        /* === 右側：進度條 === */
         .progress-compact {
             background: rgba(255,255,255,0.95); 
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 10px;
             border: 1px solid #efebe9;
             text-align: center;
-            min-width: 90px;
+            
+            /* 固定寬度設定，確保不會因為左邊字多就被擠扁 */
+            min-width: 75px; 
+            flex-shrink: 0; /* ❌ 禁止縮小 */
+            
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
         .progress-title { 
-            font-size: 0.65em; color: #bcaaa4; 
-            font-weight: bold; letter-spacing: 1px;
+            /* 🆕 字體改成跟大標題一樣 */
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.7em; 
+            color: #bcaaa4; 
+            font-weight: bold; 
+            letter-spacing: 1px;
             margin-bottom: 3px;
+            text-transform: uppercase;
         }
+        
         .progress-percent { 
             font-size: 1.4em; font-weight: 800; color: var(--color-ot); 
             line-height: 1;
@@ -143,7 +160,7 @@
 
         .card { 
             background: white; border-radius: 14px; 
-            padding: 10px 14px; /* 再縮小一點卡片內距 */
+            padding: 10px 14px; 
             margin-bottom: 12px; 
             box-shadow: 0 3px 6px rgba(0,0,0,0.02); 
             border: 2px dashed var(--card-border); 
@@ -181,9 +198,8 @@
         .tag.nt { background-color: var(--color-nt-bg); color: var(--color-nt-text); }
         .tag.rest { background-color: var(--color-rest); color: white; width: auto; padding: 1px 5px; }
 
-        /* 🆕 經文字體縮小一點 */
         .scripture-text { 
-            font-size: 0.95em; /* 原本 1.05em */
+            font-size: 0.95em; 
             font-weight: 500; color: #4e342e; flex-grow: 1; transition: color 0.2s;
             line-height: 1.3;
         }
@@ -219,7 +235,7 @@
         <div class="header-left">
             <div class="main-title">2026 BIBLE PROJECT</div>
             <span class="signature">Nancy Hsu</span>
-            <div class="subtitle">“Come near to God and he will come near to you.”</div>
+            <div class="subtitle">“Come near to God and he will come near to you.” — James 4:8</div>
         </div>
 
         <div class="progress-compact">
