@@ -4,84 +4,193 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的讀經進度表</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 簡單美觀的 CSS 設定 */
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        :root { --primary-color: #2c3e50; --accent-color: #e67e22; --bg-color: #f4f7f6; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; }
         
-        /* 載入中的提示 */
-        #loading { text-align: center; color: #666; }
+        /* 頂部 Header */
+        header { background: #fff; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 1.5em; color: var(--primary-color); }
+        .today-display { font-size: 0.9em; color: #7f8c8d; margin-top: 5px; font-weight: 500; }
 
-        /* 卡片樣式 */
-        .card { border-left: 5px solid #ddd; padding: 15px; margin-bottom: 15px; background: #fff; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .card.today { border-left-color: #e74c3c; background-color: #fff5f5; border: 2px solid #e74c3c; } /* 今天的特別樣式 */
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+
+        /* 讀取狀態與錯誤訊息 */
+        #status { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
+        .error-msg { background: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; text-align: left; line-height: 1.5; border: 1px solid #ef9a9a; }
+
+        /* 卡片設計 */
+        .card { 
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border-left: 5px solid #bdc3c7; /* 預設灰色 */
+            transition: all 0.3s ease;
+        }
+
+        /* 經文區塊佈局 */
+        .reading-section { margin-top: 12px; }
+        .reading-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 8px 0; 
+            border-bottom: 1px solid #eee; 
+        }
+        .reading-item:last-child { border-bottom: none; }
         
-        .date { font-size: 0.85em; color: #7f8c8d; letter-spacing: 1px; }
-        .scripture { font-size: 1.2em; font-weight: bold; margin-top: 5px; color: #2c3e50; }
-        .badge { display: inline-block; background: #e74c3c; color: white; font-size: 0.7em; padding: 2px 8px; border-radius: 10px; margin-left: 10px; vertical-align: middle; }
+        .label { 
+            font-size: 0.8em; 
+            color: #95a5a6; 
+            text-transform: uppercase; 
+            font-weight: bold; 
+            width: 50px; /* 固定寬度讓排版整齊 */
+        }
+        .content { 
+            font-size: 1.1em; 
+            font-weight: 500; 
+            color: var(--primary-color); 
+            flex-grow: 1; 
+            text-align: right; 
+        }
+
+        /* 今天的特殊樣式 */
+        .card.today { 
+            border-left-color: var(--accent-color); 
+            background: #fff;
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.15);
+            border: 2px solid var(--accent-color);
+        }
+        .card.today .date-row { color: var(--accent-color); font-weight: bold; }
+        
+        .date-row { font-size: 0.9em; color: #7f8c8d; display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .notes { background: #fff8e1; font-size: 0.85em; color: #8d6e63; padding: 8px 12px; border-radius: 6px; margin-top: 10px; }
+
+        /* 過去日子的樣式 */
+        .card.past { opacity: 0.6; }
+        
+        /* 標籤 Badge */
+        .badge { background: var(--accent-color); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; margin-left: 8px; }
     </style>
 </head>
 <body>
 
+<header>
+    <h1>📖 每日讀經</h1>
+    <div class="today-display" id="header-date">Loading...</div>
+</header>
+
 <div class="container">
-    <h1>📖 每日讀經計畫</h1>
-    <div id="loading">正在讀取進度表...</div>
+    <div id="status">正在從 Google 試算表載入進度...</div>
     <div id="content"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
 <script>
-    // ▼▼▼▼▼▼▼ 請將下方的網址換成你的 Google Sheet CSV 連結 ▼▼▼▼▼▼▼
-    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv'; 
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+    // ✅ 你的專屬連結已經設定好了
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv';
 
-    // 取得今天的日期字串 (格式 YYYY/M/D 或 YYYY-MM-DD，視你的 Excel 而定)
+    // 設定今天的日期
     const today = new Date();
-    // 這裡將日期格式化為 YYYY/MM/DD 以便比對
-    const formattedToday = today.getFullYear() + '/' + 
-                           String(today.getMonth() + 1).padStart(2, '0') + '/' + 
-                           String(today.getDate()).padStart(2, '0');
+    document.getElementById('header-date').innerText = today.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+
+    // 準備多種日期格式比對 (為了抓到你的 1/29, 2026/01/29 等各種可能)
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayFormats = [
+        `${yyyy}/${mm}/${dd}`,      // 2026/01/29
+        `${yyyy}-${mm}-${dd}`,      // 2026-01-29
+        `${today.getMonth() + 1}/${today.getDate()}`, // 1/29
+        `${yyyy}/${today.getMonth() + 1}/${today.getDate()}` // 2026/1/29
+    ];
+
+    const contentDiv = document.getElementById('content');
+    const statusDiv = document.getElementById('status');
 
     Papa.parse(sheetURL, {
         download: true,
         header: true,
+        skipEmptyLines: true,
         complete: function(results) {
-            const data = results.data;
-            displayData(data);
+            if (results.data && results.data.length > 0) {
+                statusDiv.style.display = 'none';
+                renderCards(results.data);
+            } else {
+                statusDiv.innerHTML = '<div class="error-msg">讀取成功，但試算表是空的？請確認 Google Sheet 有資料。</div>';
+            }
         },
         error: function(err) {
-            document.getElementById('loading').innerText = '讀取失敗，請檢查網址設定';
+            statusDiv.innerHTML = `<div class="error-msg">讀取失敗<br>錯誤代碼：${err}</div>`;
         }
     });
 
-    function displayData(data) {
-        const contentDiv = document.getElementById('content');
-        document.getElementById('loading').style.display = 'none'; // 隱藏載入中文字
-
-        // 反轉資料，讓今天的顯示在上面 (可選)
-        // data.reverse(); 
+    function renderCards(data) {
+        let foundToday = false;
 
         data.forEach(row => {
-            // 確保這一行有資料
-            if(row.Date && row.Scripture) {
-                // 判斷是否為今天 (這需要你的 Excel 日期格式跟程式對上，如果對不上，不會亮紅燈但依然會顯示)
-                // 這裡做個簡單的模糊比對
-                let isToday = row.Date.includes(formattedToday) || row.Date.includes(today.toISOString().split('T')[0]);
-                
-                let todayBadge = isToday ? '<span class="badge">今日進度</span>' : '';
-                let cardClass = isToday ? 'card today' : 'card';
+            // 抓取你的特定欄位 (Date, OT, Psalm/Proverbs, NT, Notes)
+            // 使用 trim() 去除可能的空白
+            const dateStr = row['Date'] ? row['Date'].trim() : '';
+            const dayStr = row['Day'] || '';
+            const ot = row['OT'] || '';
+            const psalm = row['Psalm/Proverbs'] || '';
+            const nt = row['NT'] || '';
+            const notes = row['Notes'] || '';
 
-                contentDiv.innerHTML += `
-                    <div class="${cardClass}">
-                        <div class="date">${row.Date} ${todayBadge}</div>
-                        <div class="scripture">${row.Scripture}</div>
-                    </div>
-                `;
+            if (!dateStr) return; // 如果這行沒有日期，跳過
+
+            // 判斷是否為今天
+            const isToday = todayFormats.some(fmt => dateStr.includes(fmt));
+            
+            let cardClass = 'card';
+            let badge = '';
+
+            if (isToday) {
+                cardClass += ' today';
+                badge = '<span class="badge">今日進度</span>';
+                foundToday = true;
+            } else if (!foundToday) {
+                // 如果今天還沒出現過，那之前的日子就算「過去」(變淡)
+                cardClass += ' past'; 
             }
+
+            // 組合 HTML
+            const cardHtml = `
+                <div class="${cardClass}" id="${isToday ? 'today-card' : ''}">
+                    <div class="date-row">
+                        <span>${dateStr} (${dayStr})</span>
+                        ${badge}
+                    </div>
+                    
+                    <div class="reading-section">
+                        ${ot ? `<div class="reading-item"><span class="label">舊約</span><span class="content">${ot}</span></div>` : ''}
+                        ${psalm ? `<div class="reading-item"><span class="label">詩/箴</span><span class="content">${psalm}</span></div>` : ''}
+                        ${nt ? `<div class="reading-item"><span class="label">新約</span><span class="content">${nt}</span></div>` : ''}
+                    </div>
+
+                    ${notes ? `<div class="notes">📝 ${notes}</div>` : ''}
+                </div>
+            `;
+            
+            contentDiv.insertAdjacentHTML('beforeend', cardHtml);
         });
+
+        // 如果找到了今天，自動捲動到那張卡片
+        const todayCard = document.getElementById('today-card');
+        if (todayCard) {
+            setTimeout(() => {
+                todayCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 500);
+        } else {
+            // 如果沒找到今天，可能是在檢查為什麼，這裡可以顯示個提示(選擇性)
+            console.log("未在列表中找到今天的日期");
+        }
     }
 </script>
 
