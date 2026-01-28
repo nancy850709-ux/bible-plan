@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的讀經手帳 V9</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>| Bible Reading |</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #fdfbf7;
             --primary: #4a4a4a;
             
             /* === 🎨 顏色設定 === */
-            --color-ot: #a1887f;      /* 舊約：淡棕色 */
+            --color-ot: #a1887f;      /* 舊約 */
             --color-psalm-bg: #fff9c4; 
             --color-psalm-text: #5d4037; 
             --color-nt-bg: #fff5f8;    
@@ -21,76 +21,84 @@
             --card-border: #5d4037;   
             --date-bg: #eceff1;       
             --color-rest: #607d8b;    
-            
-            /* 🆕 打勾後的底色 (極淡奶油黃) */
             --item-checked-bg: #fffff0;  
         }
 
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
         
         header { 
-            background: rgba(255, 255, 255, 0.95); 
+            background: rgba(255, 255, 255, 0.98); 
             backdrop-filter: blur(10px);
-            padding: 15px 20px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+            padding: 20px 20px 15px 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
             position: sticky; top: 0; z-index: 1000; text-align: center;
             border-bottom: 2px dashed #d7ccc8;
         }
+
+        /* === 2. 新增標題樣式 === */
+        .main-title {
+            font-size: 1.6em;
+            font-weight: 800;
+            color: #5d4037;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* === 3. 新增副標題樣式 (經文) === */
+        .subtitle {
+            font-family: 'Playfair Display', serif; /* 英文字體比較優雅 */
+            font-style: italic;
+            font-size: 0.95em;
+            color: #8d6e63;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .verse-ref {
+            font-size: 0.85em;
+            font-weight: bold;
+            display: block;
+            margin-top: 4px;
+            color: #a1887f;
+        }
         
         .progress-circle {
-            width: 100%; max-width: 900px; margin: 0 auto;
+            width: 100%; max-width: 600px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
         }
-        .progress-title { font-size: 0.9em; color: #a1887f; margin-bottom: 2px; font-weight: bold; }
+        .progress-title { font-size: 0.85em; color: #bcaaa4; margin-bottom: 2px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
         .progress-percent { font-size: 1.8em; font-weight: 800; color: var(--color-ot); }
-        .bar-bg { width: 120px; height: 10px; background: #efebe9; border-radius: 5px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.5s ease; border-radius: 5px; }
+        .bar-bg { width: 120px; height: 8px; background: #efebe9; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.5s ease; border-radius: 4px; }
 
-        /* === 🆕 強制雙欄排版設定 === */
         .container { 
-            max-width: 1000px; 
+            max-width: 600px; 
             margin: 0 auto; 
             padding: 20px; 
-            
-            /* Grid 設定 */
-            display: grid;
-            gap: 20px; /* 卡片之間的空隙 */
-            
-            /* 手機版預設 1 欄 */
-            grid-template-columns: 1fr;
+            display: block;
         }
 
-        /* 當螢幕大於 700px (平板/電腦) 時，強制變成 2 欄 */
-        @media (min-width: 700px) {
-            .container {
-                grid-template-columns: 1fr 1fr; /* 左邊一個、右邊一個 */
-            }
-        }
-
-        /* === 月份分隔線 === */
+        /* 月份分隔線 */
         .month-header {
-            grid-column: 1 / -1; /* 強制跨欄 */
-            margin: 25px 0 10px 0;
+            margin: 35px auto 15px auto;
             padding: 8px 25px;
             background: var(--color-month);
             color: #fff;
             font-weight: 800; font-size: 1.3em; letter-spacing: 2px;
-            border-radius: 50px; display: inline-block;
-            text-transform: uppercase; justify-self: center;
+            border-radius: 50px; display: table;
+            text-transform: uppercase;
             box-shadow: 0 4px 8px rgba(93, 64, 55, 0.2);
         }
 
-        /* === 卡片設計 === */
+        /* 卡片設計 */
         .card { 
             background: white;
             border-radius: 16px;
-            /* 🆕 減少內距，讓卡片更緊湊 */
-            padding: 12px 15px; 
+            padding: 15px 20px; 
+            margin-bottom: 20px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.02);
             border: 2px dashed var(--card-border); 
             position: relative;
             transition: all 0.3s ease;
-            height: 100%; box-sizing: border-box;
         }
 
         .card.today-highlight { 
@@ -98,37 +106,31 @@
             background: #fffdfc;
         }
 
-        /* 移除閃亮動畫，僅保留全完成的底色變化 */
         .card.all-done {
-            background-color: #fffde7; /* 很淡的黃 */
+            background-color: #fffde7;
             border-style: solid;
         }
 
-        /* 卡片標題 */
-        .card-header { margin-bottom: 8px; border-bottom: 1px solid #f1f1f1; padding-bottom: 8px; }
+        .card-header { margin-bottom: 10px; border-bottom: 1px solid #f1f1f1; padding-bottom: 10px; }
         .date-badge { 
             background: var(--date-bg); color: #455a64;
-            padding: 4px 12px; border-radius: 20px; 
-            font-size: 0.9em; font-weight: 800; display: inline-block;
+            padding: 4px 15px; border-radius: 20px; 
+            font-size: 0.95em; font-weight: 800; display: inline-block;
         }
         .weekday-span { font-weight: normal; margin-left: 8px; color: #8d6e63; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
         
-        /* === 經文行 (更緊湊) === */
         .scripture-row { 
             display: flex; align-items: center; 
-            /* 🆕 減少上下內距 */
-            padding: 6px 8px; 
+            padding: 8px 10px; 
             cursor: pointer; border-radius: 8px; 
-            /* 🆕 減少行與行之間的距離 */
-            margin-bottom: 4px; 
+            margin-bottom: 6px; 
             transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
         }
         .scripture-row:active { transform: scale(0.99); }
 
-        /* 左側標籤 */
         .tag { 
             font-size: 0.75em; padding: 3px 0; border-radius: 6px; 
-            margin-right: 10px; font-weight: bold; flex-shrink: 0; min-width: 40px; text-align: center;
+            margin-right: 12px; font-weight: bold; flex-shrink: 0; min-width: 42px; text-align: center;
         }
         .tag.ot { background-color: var(--color-ot); color: white; }
         .tag.psalm { background-color: var(--color-psalm-bg); color: var(--color-psalm-text); }
@@ -136,51 +138,53 @@
         .tag.rest { background-color: var(--color-rest); color: white; width: auto; padding: 3px 8px; }
 
         .scripture-text { 
-            font-size: 1em; font-weight: 500; color: #4e342e; flex-grow: 1; 
+            font-size: 1.05em; font-weight: 500; color: #4e342e; flex-grow: 1; 
             transition: color 0.2s;
         }
 
-        /* 打勾框 */
         .check-box {
             width: 24px; height: 24px;
             border: 2px solid #d7ccc8; border-radius: 50%;
             margin-left: 10px; display: flex; align-items: center; justify-content: center;
-            color: #fbc02d; /* 圖案顏色 */
+            color: #fbc02d; 
             transition: all 0.3s; background: white; 
-            font-size: 16px; /* 圖案大小 */
-            line-height: 1;
+            font-size: 16px; line-height: 1;
         }
         
-        /* 完成樣式 */
         .scripture-row.done {
-            background-color: var(--item-checked-bg); /* 極淡奶油黃 */
+            background-color: var(--item-checked-bg); 
             border-color: #fff9c4;
         }
         .scripture-row.done .scripture-text {
             color: #5d4037; font-weight: bold; opacity: 1; text-decoration: none;
         }
         .scripture-row.done .check-box { 
-            background: white; /* 保持白底，讓圖案清楚 */
+            background: white; 
             border-color: #fbc02d;
             box-shadow: 0 0 5px rgba(251, 192, 45, 0.3);
         }
         
-        /* 筆記區 */
         .note-section {
-            margin-top: 8px; background: var(--color-note); color: #795548;
-            padding: 6px 10px; border-radius: 8px; font-size: 0.85em; display: flex; align-items: flex-start;
+            margin-top: 10px; background: var(--color-note); color: #795548;
+            padding: 8px 12px; border-radius: 8px; font-size: 0.85em; display: flex; align-items: flex-start;
         }
         .note-icon { margin-right: 6px; }
 
-        #status { text-align: center; padding: 30px; color: #bcaaa4; grid-column: 1 / -1; }
+        #status { text-align: center; padding: 30px; color: #bcaaa4; }
     </style>
 </head>
 <body>
 
 <header>
+    <div class="main-title">2026 讀經計劃</div>
+    <div class="subtitle">
+        “Come near to God and he will come near to you.”
+        <span class="verse-ref">— James 4:8</span>
+    </div>
+
     <div class="progress-circle">
         <div class="progress-info">
-            <div class="progress-title">總進度</div>
+            <div class="progress-title">TOTAL PROGRESS</div>
             <div class="progress-percent" id="percent-text">0%</div>
         </div>
         <div class="bar-bg">
@@ -206,7 +210,6 @@
 
     const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
     
-    // 🆕 定義隨機圖案庫
     const icons = ['★', '❤', '😊', '🐻', '🌞', '✝', '🕊', '🌿', '✨', '🎵'];
 
     const contentDiv = document.getElementById('content');
@@ -223,7 +226,6 @@
         }
     });
 
-    // 🆕 根據日期產生固定的隨機圖案 (讓每一天的圖案固定，不會重新整理就變掉)
     function getIconForDate(dateStr) {
         let hash = 0;
         for (let i = 0; i < dateStr.length; i++) {
@@ -297,7 +299,6 @@
                 todayAnchorId = 'target-today';
             }
 
-            // 🆕 取得這一天的專屬圖案
             const dailyIcon = getIconForDate(dateStr);
 
             let html = `
@@ -338,9 +339,7 @@
         }
     }
 
-    // 輔助函式：產生 HTML (減少重複代碼)
     function createRowHtml(id, isDone, type, label, text, icon) {
-        // 如果已完成，直接顯示圖案；未完成則為空
         const iconHtml = isDone ? icon : '';
         return `
             <div class="scripture-row ${isDone?'done':''}" onclick="toggleItem('${id}', this, '${icon}')">
@@ -356,11 +355,11 @@
         if (savedChecks.includes(id)) {
             savedChecks = savedChecks.filter(item => item !== id);
             element.classList.remove('done');
-            checkbox.innerText = ''; // 取消時清空
+            checkbox.innerText = ''; 
         } else {
             savedChecks.push(id);
             element.classList.add('done');
-            checkbox.innerText = iconChar; // 打勾時填入該日圖案
+            checkbox.innerText = iconChar; 
         }
         localStorage.setItem('bible_checks_v3', JSON.stringify(savedChecks));
         updateStats();
