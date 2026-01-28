@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>| Bible Reading |</title>
+    <title>| Bible Project |</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -35,30 +35,15 @@
             border-bottom: 2px dashed #d7ccc8;
         }
 
-        /* === 2. 新增標題樣式 === */
         .main-title {
-            font-size: 1.6em;
-            font-weight: 800;
-            color: #5d4037;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+            font-size: 1.6em; font-weight: 800; color: #5d4037; margin-bottom: 8px; letter-spacing: 1px;
         }
 
-        /* === 3. 新增副標題樣式 (經文) === */
         .subtitle {
-            font-family: 'Playfair Display', serif; /* 英文字體比較優雅 */
-            font-style: italic;
-            font-size: 0.95em;
-            color: #8d6e63;
-            margin-bottom: 20px;
-            line-height: 1.5;
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95em; color: #8d6e63; margin-bottom: 20px; line-height: 1.5;
         }
         .verse-ref {
-            font-size: 0.85em;
-            font-weight: bold;
-            display: block;
-            margin-top: 4px;
-            color: #a1887f;
+            font-size: 0.85em; font-weight: bold; display: block; margin-top: 4px; color: #a1887f;
         }
         
         .progress-circle {
@@ -70,67 +55,40 @@
         .bar-bg { width: 120px; height: 8px; background: #efebe9; border-radius: 4px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--color-ot); width: 0%; transition: width 0.5s ease; border-radius: 4px; }
 
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            padding: 20px; 
-            display: block;
-        }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; display: block; }
 
-        /* 月份分隔線 */
         .month-header {
-            margin: 35px auto 15px auto;
-            padding: 8px 25px;
-            background: var(--color-month);
-            color: #fff;
-            font-weight: 800; font-size: 1.3em; letter-spacing: 2px;
-            border-radius: 50px; display: table;
-            text-transform: uppercase;
-            box-shadow: 0 4px 8px rgba(93, 64, 55, 0.2);
+            margin: 35px auto 15px auto; padding: 8px 25px; background: var(--color-month); color: #fff;
+            font-weight: 800; font-size: 1.3em; letter-spacing: 2px; border-radius: 50px; display: table;
+            text-transform: uppercase; box-shadow: 0 4px 8px rgba(93, 64, 55, 0.2);
         }
 
-        /* 卡片設計 */
         .card { 
-            background: white;
-            border-radius: 16px;
-            padding: 15px 20px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
-            border: 2px dashed var(--card-border); 
-            position: relative;
-            transition: all 0.3s ease;
+            background: white; border-radius: 16px; padding: 15px 20px; margin-bottom: 20px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02); border: 2px dashed var(--card-border); 
+            position: relative; transition: all 0.3s ease;
         }
 
-        .card.today-highlight { 
-            border: 3px solid #8d6e63;
-            background: #fffdfc;
-        }
-
-        .card.all-done {
-            background-color: #fffde7;
-            border-style: solid;
-        }
+        .card.today-highlight { border: 3px solid #8d6e63; background: #fffdfc; }
+        .card.all-done { background-color: #fffde7; border-style: solid; }
 
         .card-header { margin-bottom: 10px; border-bottom: 1px solid #f1f1f1; padding-bottom: 10px; }
         .date-badge { 
-            background: var(--date-bg); color: #455a64;
-            padding: 4px 15px; border-radius: 20px; 
+            background: var(--date-bg); color: #455a64; padding: 4px 15px; border-radius: 20px; 
             font-size: 0.95em; font-weight: 800; display: inline-block;
         }
         .weekday-span { font-weight: normal; margin-left: 8px; color: #8d6e63; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
         
         .scripture-row { 
-            display: flex; align-items: center; 
-            padding: 8px 10px; 
-            cursor: pointer; border-radius: 8px; 
-            margin-bottom: 6px; 
-            transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
+            display: flex; align-items: center; padding: 8px 10px; cursor: pointer; border-radius: 8px; 
+            margin-bottom: 6px; transition: all 0.2s; background: #fafafa; border: 1px solid transparent;
         }
         .scripture-row:active { transform: scale(0.99); }
 
         .tag { 
             font-size: 0.75em; padding: 3px 0; border-radius: 6px; 
             margin-right: 12px; font-weight: bold; flex-shrink: 0; min-width: 42px; text-align: center;
+            transition: opacity 0.3s;
         }
         .tag.ot { background-color: var(--color-ot); color: white; }
         .tag.psalm { background-color: var(--color-psalm-bg); color: var(--color-psalm-text); }
@@ -138,30 +96,24 @@
         .tag.rest { background-color: var(--color-rest); color: white; width: auto; padding: 3px 8px; }
 
         .scripture-text { 
-            font-size: 1.05em; font-weight: 500; color: #4e342e; flex-grow: 1; 
-            transition: color 0.2s;
+            font-size: 1.05em; font-weight: 500; color: #4e342e; flex-grow: 1; transition: color 0.2s;
         }
 
         .check-box {
-            width: 24px; height: 24px;
-            border: 2px solid #d7ccc8; border-radius: 50%;
+            width: 24px; height: 24px; border: 2px solid #d7ccc8; border-radius: 50%;
             margin-left: 10px; display: flex; align-items: center; justify-content: center;
-            color: #fbc02d; 
-            transition: all 0.3s; background: white; 
-            font-size: 16px; line-height: 1;
+            color: #fbc02d; transition: all 0.3s; background: white; font-size: 16px; line-height: 1;
         }
         
-        .scripture-row.done {
-            background-color: var(--item-checked-bg); 
-            border-color: #fff9c4;
-        }
-        .scripture-row.done .scripture-text {
-            color: #5d4037; font-weight: bold; opacity: 1; text-decoration: none;
-        }
+        /* === 🆕 更新完成樣式：隱藏標題 === */
+        .scripture-row.done { background-color: var(--item-checked-bg); border-color: #fff9c4; }
+        .scripture-row.done .scripture-text { color: #5d4037; font-weight: bold; opacity: 1; text-decoration: none; }
+        
+        /* 關鍵：當完成時，隱藏標籤 */
+        .scripture-row.done .tag { display: none; }
+        
         .scripture-row.done .check-box { 
-            background: white; 
-            border-color: #fbc02d;
-            box-shadow: 0 0 5px rgba(251, 192, 45, 0.3);
+            background: white; border-color: #fbc02d; box-shadow: 0 0 5px rgba(251, 192, 45, 0.3);
         }
         
         .note-section {
@@ -176,7 +128,7 @@
 <body>
 
 <header>
-    <div class="main-title">2026 讀經計劃</div>
+    <div class="main-title">| 2026 Bible Project |</div>
     <div class="subtitle">
         “Come near to God and he will come near to you.”
         <span class="verse-ref">— James 4:8</span>
@@ -209,7 +161,6 @@
     const todayFull = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
 
     const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-    
     const icons = ['★', '❤', '😊', '🐻', '🌞', '✝', '🕊', '🌿', '✨', '🎵'];
 
     const contentDiv = document.getElementById('content');
@@ -316,7 +267,17 @@
                 html += createRowHtml(id, isDone, 'rest', '☕ 調整', restText, dailyIcon);
             } else {
                 if(ot) html += createRowHtml(`${dateStr}_ot`, savedChecks.includes(`${dateStr}_ot`), 'ot', '舊約', ot, dailyIcon);
-                if(psalm) html += createRowHtml(`${dateStr}_psalm`, savedChecks.includes(`${dateStr}_psalm`), 'psalm', '詩篇', psalm, dailyIcon);
+                
+                // === 🆕 智慧判斷：是詩篇還是箴言？ ===
+                if(psalm) {
+                    let label = '詩篇';
+                    // 如果經文內容包含 "箴" 或 "Proverbs"，將標題改為 "箴言"
+                    if(psalm.includes('箴') || psalm.includes('Proverbs')) {
+                        label = '箴言';
+                    }
+                    html += createRowHtml(`${dateStr}_psalm`, savedChecks.includes(`${dateStr}_psalm`), 'psalm', label, psalm, dailyIcon);
+                }
+
                 if(nt) html += createRowHtml(`${dateStr}_nt`, savedChecks.includes(`${dateStr}_nt`), 'nt', '新約', nt, dailyIcon);
             }
 
