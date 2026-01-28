@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的讀經進度表</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 簡單美觀的 CSS 設定 */
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        
+        /* 載入中的提示 */
+        #loading { text-align: center; color: #666; }
+
+        /* 卡片樣式 */
+        .card { border-left: 5px solid #ddd; padding: 15px; margin-bottom: 15px; background: #fff; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card.today { border-left-color: #e74c3c; background-color: #fff5f5; border: 2px solid #e74c3c; } /* 今天的特別樣式 */
+        
+        .date { font-size: 0.85em; color: #7f8c8d; letter-spacing: 1px; }
+        .scripture { font-size: 1.2em; font-weight: bold; margin-top: 5px; color: #2c3e50; }
+        .badge { display: inline-block; background: #e74c3c; color: white; font-size: 0.7em; padding: 2px 8px; border-radius: 10px; margin-left: 10px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📖 每日讀經計畫</h1>
+    <div id="loading">正在讀取進度表...</div>
+    <div id="content"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+<script>
+    // ▼▼▼▼▼▼▼ 請將下方的網址換成你的 Google Sheet CSV 連結 ▼▼▼▼▼▼▼
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv'; 
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+    // 取得今天的日期字串 (格式 YYYY/M/D 或 YYYY-MM-DD，視你的 Excel 而定)
+    const today = new Date();
+    // 這裡將日期格式化為 YYYY/MM/DD 以便比對
+    const formattedToday = today.getFullYear() + '/' + 
+                           String(today.getMonth() + 1).padStart(2, '0') + '/' + 
+                           String(today.getDate()).padStart(2, '0');
+
+    Papa.parse(sheetURL, {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const data = results.data;
+            displayData(data);
+        },
+        error: function(err) {
+            document.getElementById('loading').innerText = '讀取失敗，請檢查網址設定';
+        }
+    });
+
+    function displayData(data) {
+        const contentDiv = document.getElementById('content');
+        document.getElementById('loading').style.display = 'none'; // 隱藏載入中文字
+
+        // 反轉資料，讓今天的顯示在上面 (可選)
+        // data.reverse(); 
+
+        data.forEach(row => {
+            // 確保這一行有資料
+            if(row.Date && row.Scripture) {
+                // 判斷是否為今天 (這需要你的 Excel 日期格式跟程式對上，如果對不上，不會亮紅燈但依然會顯示)
+                // 這裡做個簡單的模糊比對
+                let isToday = row.Date.includes(formattedToday) || row.Date.includes(today.toISOString().split('T')[0]);
+                
+                let todayBadge = isToday ? '<span class="badge">今日進度</span>' : '';
+                let cardClass = isToday ? 'card today' : 'card';
+
+                contentDiv.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="date">${row.Date} ${todayBadge}</div>
+                        <div class="scripture">${row.Scripture}</div>
+                    </div>
+                `;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
