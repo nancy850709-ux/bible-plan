@@ -32,7 +32,6 @@
         }
 
         body { 
-            /* 🆕 全站改用 Klee One */
             font-family: 'Klee One', 'Noto Sans TC', sans-serif; 
             
             margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px;
@@ -42,17 +41,19 @@
             letter-spacing: 0.5px;
         }
         
-        /* === Header === */
+        /* === Header (奶茶色背景 + 白色格紋) === */
         header { 
-            background-color: #ffffff;
-            /* 淡雅格紋背景 */
+            /* 1. 設定奶茶色底 */
+            background-color: #eddfd2;
+            
+            /* 2. 設定白色格紋 (使用 rgba 白色半透明) */
             background-image: 
-                linear-gradient(#f0e6dd 1px, transparent 1px), 
-                linear-gradient(90deg, #f0e6dd 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
             background-size: 20px 20px;
             
             padding: 15px 20px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
             position: sticky; top: 0; z-index: 1000; 
             border-bottom: 2px dashed #d7ccc8;
         }
@@ -73,7 +74,7 @@
             min-width: 0;    
         }
 
-        /* 主標題 (維持古典襯線體) */
+        /* 主標題 */
         .main-title {
             font-family: 'Cormorant Garamond', serif; 
             font-size: 1.5em; 
@@ -82,10 +83,12 @@
             letter-spacing: 0.5px;
             line-height: 1;
             text-transform: uppercase;
-            background: rgba(255,255,255,0.85); 
+            /* 讓白色底框在奶茶色背景上更跳 */
+            background: rgba(255,255,255,0.9); 
             padding: 3px 6px;
             display: inline-block;
             border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 加一點點陰影增加層次 */
         }
 
         .signature {
@@ -101,26 +104,26 @@
             font-family: 'Playfair Display', serif; 
             font-style: italic; 
             font-size: 0.8em; 
-            color: #a1887f; 
+            color: #8d6e63; /* 字色微調深一點，在奶茶色上比較清楚 */
             margin-top: 6px;
             display: block;
             line-height: 1.3;
             white-space: normal; 
-            background: rgba(255,255,255,0.5); 
-            padding: 2px;
-            border-radius: 4px;
+            /* 移除原本的半透明背景，直接顯示在格紋上更有質感，或者改用極淡白色 */
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.8); /* 白色描邊效果 */
         }
 
         /* === 右側：進度條 === */
         .progress-compact {
-            background: rgba(255,255,255,0.95); 
+            /* 增加不透明度，讓它在奶茶背景上更乾淨 */
+            background: #ffffff; 
             padding: 8px 10px;
             border-radius: 10px;
             border: 1px solid #efebe9;
             text-align: center;
             min-width: 75px; 
             flex-shrink: 0; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .progress-title { 
@@ -182,7 +185,6 @@
         .date-badge { 
             background: var(--date-bg); color: #546e7a; 
             padding: 2px 10px; border-radius: 12px; 
-            /* 日期用 Klee One 也很有味道 */
             font-size: 0.9em; font-weight: 600; display: inline-block;
         }
         .weekday-span { font-weight: normal; margin-left: 6px; color: #8d6e63; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
@@ -198,7 +200,6 @@
         .scripture-row:active { transform: scale(0.99); }
 
         .tag { 
-            /* 標籤字體設定 */
             font-family: 'Klee One', sans-serif;
             font-size: 0.75em; padding: 1px 0; border-radius: 4px; 
             margin-right: 8px; font-weight: bold; flex-shrink: 0; min-width: 38px; text-align: center;
@@ -210,7 +211,7 @@
         .tag.rest { background-color: var(--color-rest); color: white; width: auto; padding: 1px 5px; }
 
         .scripture-text { 
-            font-size: 0.95em; /* Klee One 視覺較小，稍微調回 0.95em 比較好讀 */
+            font-size: 0.95em; 
             font-weight: 600; 
             color: #4e342e; flex-grow: 1; transition: color 0.2s;
             line-height: 1.4;
