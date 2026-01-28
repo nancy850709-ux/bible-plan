@@ -9,13 +9,15 @@
     
     <style>
         :root {
-            /* === 🎨 顏色設定 (V27 更新) === */
-            /* Body 背景設定：奶茶色 + 深一點的點點 */
-            --bg-base: #eddfd2;       /* 🆕 奶茶色底 */
-            --dot-color: #d4c5b9;     /* 🆕 深拿鐵色點點 (為了在奶茶色上顯色) */
+            /* === 🎨 顏色設定 (V28 焦糖奶油版) === */
             
-            /* Header 背景設定：暖黃色 */
-            --header-bg: #f9edcd;     /* 🆕 暖奶油黃 */
+            /* Body 背景：使用上一版的「暖奶油黃」 */
+            --bg-base: #f9edcd;       
+            /* 點點顏色：稍微深一點的黃褐色，讓點點看得到但柔和 */
+            --dot-color: #e6dcb8;     
+            
+            /* Header 背景：回歸「奶茶色」 */
+            --header-bg: #eddfd2;     
             
             --primary: #5d4037;       
             
@@ -39,22 +41,22 @@
             font-family: 'Klee One', 'Noto Sans TC', sans-serif; 
             
             margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px;
-            /* 使用新的奶茶色背景和點點 */
+            /* 暖奶油黃背景 + 點點 */
             background-color: var(--bg-base);
             background-image: radial-gradient(var(--dot-color) 2px, transparent 2px);
             background-size: 24px 24px; 
             letter-spacing: 0.5px;
         }
         
-        /* === Header (暖黃色背景 + 白色格紋) === */
+        /* === Header (奶茶色背景 + 白色格紋) === */
         header { 
-            /* 1. 設定暖黃色底 */
+            /* 奶茶色底 */
             background-color: var(--header-bg);
             
-            /* 2. 設定白色格紋 (使用 rgba 白色半透明) */
+            /* 白色半透明格紋 */
             background-image: 
-                linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), 
-                linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
             background-size: 20px 20px;
             
             padding: 15px 20px; 
@@ -88,7 +90,8 @@
             letter-spacing: 0.5px;
             line-height: 1;
             text-transform: uppercase;
-            background: rgba(255,255,255,0.9); 
+            /* 標題底框 */
+            background: rgba(255,255,255,0.85); 
             padding: 3px 6px;
             display: inline-block;
             border-radius: 4px;
@@ -113,7 +116,7 @@
             display: block;
             line-height: 1.3;
             white-space: normal; 
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.6);
         }
 
         /* === 右側：進度條 === */
