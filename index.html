@@ -3,194 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的讀經進度表</title>
+    <title>讀經進度表</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-color: #2c3e50; --accent-color: #e67e22; --bg-color: #f4f7f6; }
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: #333; }
+        :root { --primary: #2c3e50; --accent: #27ae60; --bg: #f4f7f6; --gray: #95a5a6; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #333; padding-bottom: 50px; }
         
-        /* 頂部 Header */
-        header { background: #fff; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        h1 { margin: 0; font-size: 1.5em; color: var(--primary-color); }
-        .today-display { font-size: 0.9em; color: #7f8c8d; margin-top: 5px; font-weight: 500; }
+        /* === 頂部進度儀表板 (模仿你喜歡的風格) === */
+        header { 
+            background: white; 
+            padding: 20px 20px 30px 20px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            text-align: center;
+        }
+        h1 { margin: 0 0 5px 0; font-size: 1.2em; color: var(--gray); font-weight: normal; }
+        
+        /* 大大的百分比數字 */
+        .big-percent { font-size: 3em; font-weight: 700; color: var(--primary); line-height: 1; margin: 10px 0; }
+        .percent-symbol { font-size: 0.4em; color: var(--gray); vertical-align: super; }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+        /* 進度條容器 */
+        .progress-container { background: #eee; height: 10px; border-radius: 20px; width: 100%; max-width: 400px; margin: 0 auto; overflow: hidden; }
+        /* 實際跑的進度條 */
+        .progress-bar { background: var(--accent); height: 100%; width: 0%; transition: width 0.5s ease; border-radius: 20px; }
+        
+        .stats-text { font-size: 0.9em; color: var(--gray); margin-top: 8px; }
 
-        /* 讀取狀態與錯誤訊息 */
-        #status { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
-        .error-msg { background: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; text-align: left; line-height: 1.5; border: 1px solid #ef9a9a; }
+        /* === 列表容器 === */
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        /* 卡片設計 */
+        /* === 卡片設計 === */
         .card { 
             background: white;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 15px 20px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            border-left: 5px solid #bdc3c7; /* 預設灰色 */
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center; /* 垂直置中 */
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            cursor: pointer; /* 讓整張卡片都可以點 */
         }
-
-        /* 經文區塊佈局 */
-        .reading-section { margin-top: 12px; }
-        .reading-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 8px 0; 
-            border-bottom: 1px solid #eee; 
-        }
-        .reading-item:last-child { border-bottom: none; }
         
-        .label { 
-            font-size: 0.8em; 
-            color: #95a5a6; 
-            text-transform: uppercase; 
-            font-weight: bold; 
-            width: 50px; /* 固定寬度讓排版整齊 */
-        }
-        .content { 
-            font-size: 1.1em; 
-            font-weight: 500; 
-            color: var(--primary-color); 
-            flex-grow: 1; 
-            text-align: right; 
-        }
+        /* 點選時的微動畫 */
+        .card:active { transform: scale(0.98); }
 
-        /* 今天的特殊樣式 */
-        .card.today { 
-            border-left-color: var(--accent-color); 
-            background: #fff;
-            transform: scale(1.02);
-            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.15);
-            border: 2px solid var(--accent-color);
-        }
-        .card.today .date-row { color: var(--accent-color); font-weight: bold; }
+        /* 完成的卡片樣式 */
+        .card.completed { border-color: var(--accent); background-color: #f0fff4; opacity: 0.8; }
+        .card.completed .scripture { text-decoration: line-through; color: var(--gray); }
         
-        .date-row { font-size: 0.9em; color: #7f8c8d; display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .notes { background: #fff8e1; font-size: 0.85em; color: #8d6e63; padding: 8px 12px; border-radius: 6px; margin-top: 10px; }
+        /* 左邊的內容區 */
+        .card-content { flex-grow: 1; }
+        .date { font-size: 0.85em; color: var(--gray); font-weight: bold; margin-bottom: 4px; }
+        .scripture { font-size: 1.1em; font-weight: 700; color: var(--primary); transition: color 0.2s; }
 
-        /* 過去日子的樣式 */
-        .card.past { opacity: 0.6; }
-        
-        /* 標籤 Badge */
-        .badge { background: var(--accent-color); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; margin-left: 8px; }
+        /* 右邊的勾選框 (客製化樣式) */
+        .checkbox-wrapper { margin-left: 15px; }
+        .custom-checkbox {
+            width: 28px; height: 28px;
+            border: 2px solid #ddd; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            color: white;
+        }
+        /* 勾選後的樣子 */
+        .card.completed .custom-checkbox { background: var(--accent); border-color: var(--accent); }
+
+        /* 讀取訊息 */
+        #status { text-align: center; padding: 20px; color: var(--gray); }
+        .today-badge { background: #3498db; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; margin-left: 5px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>📖 每日讀經</h1>
-    <div class="today-display" id="header-date">Loading...</div>
+    <h1>讀經進度</h1>
+    <div class="big-percent" id="percent-display">0<span class="percent-symbol">%</span></div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="stats-text" id="stats-display">載入中...</div>
 </header>
 
 <div class="container">
-    <div id="status">正在從 Google 試算表載入進度...</div>
+    <div id="status">正在連線至資料庫...</div>
     <div id="content"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
 <script>
-    // ✅ 你的專屬連結已經設定好了
+    // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    // 請確認這裡是你正確的 CSV 連結
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZRE4__MO8iWk0-3mNMmfm9WshlYpZWuw9D5YgqNDayuR5w6qeBvIt7tOXuloiRe-8TYPxwBjGXMTk/pub?output=csv';
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
-    // 設定今天的日期
+    // 1. 初始化本地儲存 (讀取以前的打勾紀錄)
+    // 我們用 "bible_checks" 這個名字存在瀏覽器裡
+    let savedChecks = JSON.parse(localStorage.getItem('bible_checks')) || [];
+
+    // 2. 準備今天的日期
     const today = new Date();
-    document.getElementById('header-date').innerText = today.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
-
-    // 準備多種日期格式比對 (為了抓到你的 1/29, 2026/01/29 等各種可能)
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
     const todayFormats = [
-        `${yyyy}/${mm}/${dd}`,      // 2026/01/29
-        `${yyyy}-${mm}-${dd}`,      // 2026-01-29
-        `${today.getMonth() + 1}/${today.getDate()}`, // 1/29
-        `${yyyy}/${today.getMonth() + 1}/${today.getDate()}` // 2026/1/29
+        `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`,
+        `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+        `${today.getMonth() + 1}/${today.getDate()}`
     ];
 
     const contentDiv = document.getElementById('content');
     const statusDiv = document.getElementById('status');
+    let totalItems = 0;
 
+    // 3. 開始抓資料
     Papa.parse(sheetURL, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
+        download: true, header: true, skipEmptyLines: true,
         complete: function(results) {
             if (results.data && results.data.length > 0) {
                 statusDiv.style.display = 'none';
-                renderCards(results.data);
+                totalItems = results.data.length; // 紀錄總題數
+                renderList(results.data);
+                updateProgressUI(); // 畫完列表後，更新一次進度條
             } else {
-                statusDiv.innerHTML = '<div class="error-msg">讀取成功，但試算表是空的？請確認 Google Sheet 有資料。</div>';
+                statusDiv.innerText = '讀取成功，但沒有資料';
             }
         },
-        error: function(err) {
-            statusDiv.innerHTML = `<div class="error-msg">讀取失敗<br>錯誤代碼：${err}</div>`;
-        }
+        error: function(err) { statusDiv.innerText = '讀取失敗'; }
     });
 
-    function renderCards(data) {
+    // 4. 產生列表
+    function renderList(data) {
         let foundToday = false;
 
-        data.forEach(row => {
-            // 抓取你的特定欄位 (Date, OT, Psalm/Proverbs, NT, Notes)
-            // 使用 trim() 去除可能的空白
+        data.forEach((row, index) => {
             const dateStr = row['Date'] ? row['Date'].trim() : '';
-            const dayStr = row['Day'] || '';
-            const ot = row['OT'] || '';
-            const psalm = row['Psalm/Proverbs'] || '';
-            const nt = row['NT'] || '';
-            const notes = row['Notes'] || '';
+            if (!dateStr) return;
 
-            if (!dateStr) return; // 如果這行沒有日期，跳過
-
-            // 判斷是否為今天
-            const isToday = todayFormats.some(fmt => dateStr.includes(fmt));
+            // 為了讓每個勾勾有獨特的身分證，我們用 "Date" 當作 ID
+            // 檢查這個日期是不是已經被勾過了
+            const isChecked = savedChecks.includes(dateStr);
             
-            let cardClass = 'card';
-            let badge = '';
+            // 檢查是不是今天
+            const isToday = todayFormats.some(fmt => dateStr.includes(fmt));
+            if (isToday) foundToday = true;
 
-            if (isToday) {
-                cardClass += ' today';
-                badge = '<span class="badge">今日進度</span>';
-                foundToday = true;
-            } else if (!foundToday) {
-                // 如果今天還沒出現過，那之前的日子就算「過去」(變淡)
-                cardClass += ' past'; 
-            }
+            // 建立卡片 HTML
+            const card = document.createElement('div');
+            // 如果已勾選，加上 .completed 樣式
+            card.className = `card ${isChecked ? 'completed' : ''}`;
+            // 點擊卡片觸發 toggleCheck 函式
+            card.onclick = () => toggleCheck(card, dateStr);
 
-            // 組合 HTML
-            const cardHtml = `
-                <div class="${cardClass}" id="${isToday ? 'today-card' : ''}">
-                    <div class="date-row">
-                        <span>${dateStr} (${dayStr})</span>
-                        ${badge}
+            // 組合內容 (舊約/新約/詩篇 合併顯示讓版面乾淨，或者你可以維持分開)
+            // 這裡我做了一個簡潔版，把所有經文串在一起
+            const scriptureText = [row['OT'], row['Psalm/Proverbs'], row['NT']].filter(Boolean).join('、');
+
+            card.innerHTML = `
+                <div class="card-content">
+                    <div class="date">${dateStr} ${isToday ? '<span class="today-badge">Today</span>' : ''}</div>
+                    <div class="scripture">${scriptureText || '無進度'}</div>
+                </div>
+                <div class="checkbox-wrapper">
+                    <div class="custom-checkbox">
+                        ${isChecked ? '✔' : ''}
                     </div>
-                    
-                    <div class="reading-section">
-                        ${ot ? `<div class="reading-item"><span class="label">舊約</span><span class="content">${ot}</span></div>` : ''}
-                        ${psalm ? `<div class="reading-item"><span class="label">詩/箴</span><span class="content">${psalm}</span></div>` : ''}
-                        ${nt ? `<div class="reading-item"><span class="label">新約</span><span class="content">${nt}</span></div>` : ''}
-                    </div>
-
-                    ${notes ? `<div class="notes">📝 ${notes}</div>` : ''}
                 </div>
             `;
             
-            contentDiv.insertAdjacentHTML('beforeend', cardHtml);
-        });
+            contentDiv.appendChild(card);
 
-        // 如果找到了今天，自動捲動到那張卡片
-        const todayCard = document.getElementById('today-card');
-        if (todayCard) {
-            setTimeout(() => {
-                todayCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 500);
+            // 自動捲動到今天 (如果還沒勾完的話)
+            if (isToday && !isChecked) {
+                setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
+            }
+        });
+    }
+
+    // 5. 打勾/取消打勾的邏輯
+    function toggleCheck(cardElement, dateID) {
+        if (savedChecks.includes(dateID)) {
+            // 如果已經有，就移除 (取消打勾)
+            savedChecks = savedChecks.filter(id => id !== dateID);
+            cardElement.classList.remove('completed');
+            cardElement.querySelector('.custom-checkbox').innerHTML = '';
         } else {
-            // 如果沒找到今天，可能是在檢查為什麼，這裡可以顯示個提示(選擇性)
-            console.log("未在列表中找到今天的日期");
+            // 如果沒有，就加入 (打勾)
+            savedChecks.push(dateID);
+            cardElement.classList.add('completed');
+            cardElement.querySelector('.custom-checkbox').innerHTML = '✔';
         }
+
+        // 重要：存回瀏覽器
+        localStorage.setItem('bible_checks', JSON.stringify(savedChecks));
+        
+        // 更新上方進度條
+        updateProgressUI();
+    }
+
+    // 6. 更新進度條 UI
+    function updateProgressUI() {
+        const checkedCount = savedChecks.length;
+        // 避免除以 0
+        const percentage = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
+
+        // 更新數字
+        document.getElementById('percent-display').innerHTML = `${percentage}<span class="percent-symbol">%</span>`;
+        // 更新條狀圖寬度
+        document.getElementById('progress-bar').style.width = `${percentage}%`;
+        // 更新文字敘述
+        document.getElementById('stats-display').innerText = `已完成 ${checkedCount} / ${totalItems} 天`;
     }
 </script>
 
