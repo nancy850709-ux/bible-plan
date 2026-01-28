@@ -9,7 +9,7 @@
     
     <style>
         :root {
-            /* === 🎨 顏色設定 (V31) === */
+            /* === 🎨 顏色設定 (V32) === */
             
             /* Body 背景：清透奶油黃 */
             --bg-base: #fffbf0;       
@@ -33,9 +33,12 @@
             --date-bg: #eceff1;       
             --color-rest: #607d8b;    
             
-            /* 🆕 完成後的背景：反暖黃色 (明亮的鵝黃) */
-            --item-checked-bg: #fff9c4;  
-            --item-checked-border: #fff59d; 
+            /* 🆕 行背景回歸淡拿鐵色 */
+            --item-checked-bg: #f2ece4;  
+            --item-checked-border: #e0d4c6; 
+
+            /* 🆕 圓圈圈實心暖黃色 */
+            --checkbox-solid-bg: #fbc02d;
         }
 
         body { 
@@ -225,16 +228,16 @@
             margin-left: 8px; display: flex; align-items: center; justify-content: center;
             color: #fbc02d; 
             transition: all 0.3s; background: white; 
-            /* 🆕 把字體放大，讓星星看起來更大顆 */
-            font-size: 18px; 
+            font-size: 14px; 
             line-height: 1;
         }
         
-        /* 🆕 完成樣式：背景變暖黃色 */
+        /* 🆕 完成後行背景 (淡拿鐵色) */
         .scripture-row.done { 
             background-color: var(--item-checked-bg); 
             border-color: var(--item-checked-border); 
         }
+        
         .scripture-row.done .scripture-text { 
             color: #5d4037; 
             font-weight: 600; 
@@ -242,8 +245,13 @@
             text-decoration: none; 
         }
         .scripture-row.hide-tag .tag { display: none; }
+        
+        /* 🆕 完成後圓圈圈 (實心黃 + 白字) */
         .scripture-row.done .check-box { 
-            background: white; border-color: #fbc02d; box-shadow: 0 0 5px rgba(251, 192, 45, 0.3);
+            background: var(--checkbox-solid-bg); 
+            border-color: var(--checkbox-solid-bg); 
+            color: white; /* 星星變白色 */
+            box-shadow: 0 2px 6px rgba(251, 192, 45, 0.4); /* 增加一點發光感 */
         }
         
         .note-section {
@@ -293,7 +301,7 @@
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
-    /* 🆕 移除圓點，只保留星星與光芒相關的符號 */
+    /* 星星與幾何符號 */
     const icons = ['✔', '†', '★', '✨', '✶', '✴', '✦'];
 
     const contentDiv = document.getElementById('content');
