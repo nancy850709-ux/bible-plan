@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>| Bible Project |</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <title>| 2026 Bible Project | - Nancy Hsu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:ital@0;1&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #fdfbf7;
@@ -27,20 +27,45 @@
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--primary); padding-bottom: 80px; }
         
         header { 
-            background: rgba(255, 255, 255, 0.98); 
-            backdrop-filter: blur(10px);
-            padding: 20px 20px 15px 20px; 
+            /* === 3. 新增格紋背景 === */
+            background-color: #ffffff;
+            /* 使用 CSS 繪製淡米色格紋 */
+            background-image: 
+                linear-gradient(#f0e6dd 1px, transparent 1px), 
+                linear-gradient(90deg, #f0e6dd 1px, transparent 1px);
+            background-size: 20px 20px; /* 格子大小 */
+            
+            padding: 25px 20px 20px 20px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
             position: sticky; top: 0; z-index: 1000; text-align: center;
             border-bottom: 2px dashed #d7ccc8;
         }
 
         .main-title {
-            font-size: 1.6em; font-weight: 800; color: #5d4037; margin-bottom: 8px; letter-spacing: 1px;
+            font-size: 1.6em; 
+            font-weight: 800; 
+            color: #5d4037; 
+            margin-bottom: 8px; 
+            letter-spacing: 1px;
+            /* 讓標題有白色底色塊，避免被格紋干擾太嚴重，增加層次 */
+            background: rgba(255,255,255,0.8);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 8px;
+        }
+
+        /* === 4. Nancy Hsu 簽名樣式 === */
+        .signature {
+            font-family: 'Dancing Script', cursive; /* 手寫體 */
+            font-size: 0.8em; /* 字小一點 */
+            color: #8d6e63;
+            margin-left: 8px;
+            font-weight: normal;
         }
 
         .subtitle {
             font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95em; color: #8d6e63; margin-bottom: 20px; line-height: 1.5;
+            text-shadow: 1px 1px 0 #fff; /* 增加文字白邊，更清晰 */
         }
         .verse-ref {
             font-size: 0.85em; font-weight: bold; display: block; margin-top: 4px; color: #a1887f;
@@ -49,6 +74,9 @@
         .progress-circle {
             width: 100%; max-width: 600px; margin: 0 auto;
             display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.9); /* 進度條背景加一點白底 */
+            padding: 10px 15px;
+            border-radius: 12px;
         }
         .progress-title { font-size: 0.85em; color: #bcaaa4; margin-bottom: 2px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
         .progress-percent { font-size: 1.8em; font-weight: 800; color: var(--color-ot); }
@@ -109,6 +137,9 @@
         .scripture-row.done { background-color: var(--item-checked-bg); border-color: #fff9c4; }
         .scripture-row.done .scripture-text { color: #5d4037; font-weight: bold; opacity: 1; text-decoration: none; }
         
+        /* 隱藏標籤 */
+        .scripture-row.hide-tag .tag { display: none; }
+        
         .scripture-row.done .check-box { 
             background: white; border-color: #fbc02d; box-shadow: 0 0 5px rgba(251, 192, 45, 0.3);
         }
@@ -125,7 +156,10 @@
 <body>
 
 <header>
-    <div class="main-title">| 2026 Bible Project |</div>
+    <div class="main-title">
+        | 2026 Bible Project | <span class="signature">- Nancy Hsu</span>
+    </div>
+    
     <div class="subtitle">
         “Come near to God and he will come near to you.”
         <span class="verse-ref">— James 4:8</span>
@@ -227,8 +261,6 @@
 
             const isToday = dateStr.includes(todayShort) || dateStr === todayFull;
             
-            // === 🆕 關鍵修正：預處理資料 ===
-            // 如果內容包含「已完成」，直接把它清空，這樣後面的程式碼就會當作它不存在
             let ot = row['OT'] || '';
             let psalm = row['Psalm/Proverbs'] || '';
             let nt = row['NT'] || '';
@@ -242,9 +274,6 @@
             const isRestDay = /休息|補進度|Rest|Catch/i.test(allContent);
 
             let dailyTotal = isRestDay ? 1 : ((ot?1:0) + (psalm?1:0) + (nt?1:0));
-            
-            // 如果這一天全部都清空了（例如舊約新約都已完成），那就略過整張卡片，或只顯示空卡片？
-            // 這裡選擇：只要還有內容就顯示，總數加上去
             totalItems += dailyTotal;
 
             const card = document.createElement('div');
@@ -273,8 +302,6 @@
                 const restText = allContent || "本日休息 / 補進度";
                 html += createRowHtml(id, isDone, 'rest', '☕ 調整', restText, dailyIcon);
             } else {
-                // 只有當 ot/psalm/nt 不為空時，才會建立那一行
-                // 因為前面已經把「已完成」清空了，所以這裡自動不會產生那一行
                 if(ot) html += createRowHtml(`${dateStr}_ot`, savedChecks.includes(`${dateStr}_ot`), 'ot', '舊約', ot, dailyIcon);
                 
                 if(psalm) {
@@ -292,8 +319,6 @@
                 html += `<div class="note-section"><span class="note-icon">📝</span>${notes}</div>`;
             }
             
-            // 如果這張卡片裡完全沒有任務（都已完成），也可以選擇不 append card
-            // 這裡保留卡片（因為可能有筆記），但如果全空看起來會只有標題
             card.innerHTML = html;
             contentDiv.appendChild(card);
             checkCardCompletion(card);
@@ -311,10 +336,21 @@
 
     function createRowHtml(id, isDone, type, label, text, icon) {
         const iconHtml = isDone ? icon : '';
+        
+        let tagHtml = `<span class="tag ${type}">${label}</span>`;
+        let displayText = text;
+        let rowClass = "";
+
+        // 智慧隱藏邏輯
+        if (text.includes('已完成')) {
+            rowClass = "hide-tag"; 
+            displayText = displayText.replace(/（已完成）|已完成/g, '');
+        }
+
         return `
-            <div class="scripture-row ${isDone?'done':''}" onclick="toggleItem('${id}', this, '${icon}')">
-                <span class="tag ${type}">${label}</span>
-                <span class="scripture-text">${text}</span>
+            <div class="scripture-row ${isDone?'done':''} ${rowClass}" onclick="toggleItem('${id}', this, '${icon}')">
+                ${tagHtml}
+                <span class="scripture-text">${displayText}</span>
                 <div class="check-box">${iconHtml}</div>
             </div>`;
     }
