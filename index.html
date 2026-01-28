@@ -9,14 +9,14 @@
     
     <style>
         :root {
-            /* === 🎨 顏色設定 (V29 清透奶油版) === */
+            /* === 🎨 顏色設定 (V30) === */
             
-            /* 🆕 Body 背景：改回更淡的清透奶油黃 */
+            /* Body 背景：清透奶油黃 */
             --bg-base: #fffbf0;       
-            /* 點點顏色維持柔和的黃褐色 */
+            /* 點點顏色 */
             --dot-color: #e6dcb8;     
             
-            /* Header 背景：維持奶茶色 */
+            /* Header 背景：奶茶色 */
             --header-bg: #eddfd2;     
             
             --primary: #5d4037;       
@@ -50,10 +50,7 @@
         
         /* === Header (奶茶色背景 + 白色格紋) === */
         header { 
-            /* 奶茶色底 */
             background-color: var(--header-bg);
-            
-            /* 白色半透明格紋 */
             background-image: 
                 linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), 
                 linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
@@ -226,7 +223,10 @@
             width: 20px; height: 20px; 
             border: 2px solid #d7ccc8; border-radius: 50%;
             margin-left: 8px; display: flex; align-items: center; justify-content: center;
-            color: #fbc02d; transition: all 0.3s; background: white; font-size: 13px; line-height: 1;
+            color: #fbc02d; /* 這是打勾符號的顏色 (黃色) */
+            transition: all 0.3s; background: white; 
+            font-size: 14px; /* 調整符號大小 */
+            line-height: 1;
         }
         
         .scripture-row.done { 
@@ -290,7 +290,9 @@
     const todayFull = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const icons = ['★', '❤', '😊', '🐻', '🌞', '✝', '🕊', '🌿', '✨', '🎵'];
+    
+    // === 🆕 符號改為單純的幾何文字 (不會變彩色 Emoji) ===
+    const icons = ['✔', '†', '⋆', '✦', '•', '❖', '✶'];
 
     const contentDiv = document.getElementById('content');
     let totalItems = 0;
